@@ -7,14 +7,16 @@ from . import airbyte_utils
 
 class AirbyteSource:
 
-    def __init__(self, exec):
+    def __init__(self, exec, config=None):
         self.exec = exec
+        self.config = config
 
     def run(self, args, catalog=None):
         with tempfile.TemporaryDirectory() as temp_dir:
             command = f'{self.exec} {args}'
             needs_config = 'spec' not in args
             if needs_config:
+                assert self.config, 'config argument is missing'
                 filename = f'{temp_dir}/config.json'
                 json.dump(self.config, open(filename, 'w', encoding='utf-8'))
                 command += f' --config {filename}'
