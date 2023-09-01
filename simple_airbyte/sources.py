@@ -5,30 +5,39 @@ import json
 from . import airbyte_utils
 
 
+class AirbyteSourceException(Exception):
+    pass
+
+
 class AirbyteSource:
 
-    def __init__(self, exec, config=None):
+    def __init__(self, exec, config=None, configured_catalog=None):
         self.exec = exec
         self.config = config
+        self.configured_catalog = configured_catalog
 
-    def run(self, args, catalog=None):
+    def run(self, action):
         with tempfile.TemporaryDirectory() as temp_dir:
-            command = f'{self.exec} {args}'
-            needs_config = 'spec' not in args
+            command = f'{self.exec} {action}'
+            needs_config = action != 'spec'
             if needs_config:
                 assert self.config, 'config argument is missing'
                 filename = f'{temp_dir}/config.json'
                 json.dump(self.config, open(filename, 'w', encoding='utf-8'))
                 command += f' --config {filename}'
-            if catalog:
+            needs_configured_catalog = action == 'read'
+            if needs_configured_catalog:
+                assert self.configured_catalog, 'confiured_catalog argument is missing'
                 filename = f'{temp_dir}/catalog.json'
-                json.dump(catalog, open(filename, 'w', encoding='utf-8'))
+                json.dump(self.configured_catalog, open(filename, 'w', encoding='utf-8'))
                 command += f' --catalog {filename}'
             print(command)
             process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
             for line in iter(process.stdout.readline, b""):
                 content = line.decode().strip()
                 message = json.loads(content)
+                if message['type'] == 'TRACE':
+                    raise AirbyteSourceException(message['trace']['error.message'])
                 yield message
 
     def run_and_return_first_message(self, command):
@@ -36,14 +45,14 @@ class AirbyteSource:
         return next(messages)
 
     @property
-    def sample_config(self):
-        spec = self.spec
-        return airbyte_utils.generate_connection_yaml_config_sample(spec)
-
-    @property
     def spec(self):
         message = self.run_and_return_first_message('spec')
         return message['spec']
+
+    @property
+    def sample_config(self):
+        spec = self.spec
+        return airbyte_utils.generate_connection_yaml_config_sample(spec)
 
     @property
     def catalog(self):
@@ -51,7 +60,7 @@ class AirbyteSource:
         return message['catalog']
 
     @property
-    def configured_catalog(self):
+    def sample_configured_catalog(self):
         catalog = self.catalog
         catalog['streams'] = [
             {
@@ -72,3 +81,7 @@ class AirbyteSource:
     def connection_status(self):
         message = self.run_and_return_first_message('check')
         return message['connectionStatus']
+
+    @property
+    def messages(self):
+        return self.run('read')
