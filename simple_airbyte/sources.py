@@ -35,7 +35,7 @@ class AirbyteSource:
         messages = self.run(command)
         return next(messages)
 
-    def init_config(self):
+    def generate_config_sample(self):
         spec = self.spec
         yaml_config = airbyte_utils.generate_connection_yaml_config_sample(spec)
         return yaml_config
@@ -68,6 +68,7 @@ class AirbyteSource:
     def streams(self):
         return [stream['name'] for stream in self.catalog['streams']]
 
-    def check(self):
+    @property
+    def connection_status(self):
         message = self.run_and_return_first_message('check')
         return message['connectionStatus']
