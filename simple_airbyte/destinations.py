@@ -113,7 +113,7 @@ class BigQueryDestination(BaseDestination):
 
     def get_state(self):
         rows = self.bigquery.query(f'''
-            select json_extract(data, '$.data') as state
+            select json_extract(_airbyte_data, '$.data') as state
             from {self.dataset}.{self.tables['airbyte_states']}
             order by _airbyte_emitted_at desc
             limit 1

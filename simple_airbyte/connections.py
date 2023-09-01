@@ -24,10 +24,12 @@ class AirbyteSource2Destination:
         raise NotImplementedError()
 
     def run(self, command):
-        if command != 'read':
+        if command not in ['state', 'read']:
             return getattr(self.airbyte_source, command)
 
         state = self.destination.get_state()
+        if command == 'state':
+            return state
         messages = self.airbyte_source.read(state=state)
         self.destination.load(messages)
         return {'status': 'success'}
