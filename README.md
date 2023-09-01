@@ -20,11 +20,11 @@ Airbyte provides a very nice UI for configuring and orchestrating connectors. Ho
 
 `simple_airbyte` offers:
 
-> 1. A lightweight python wrapper around any Airbyte Source executable. It comes with:
+> 1. ⚡ A lightweight python wrapper around any Airbyte Source executable. It comes with:
 >     - sample `config` generation in yaml to ease configuration.
 >     - sample `configured_catalog` generation
-> 2. Destination Connectors (only BigQuery for now - *contibutions are welcome* 🤗) which store `logs` and `states` in addition to data. Thus, there is **no need for a database any more!**
-> 3. Examples to deploy to **serverless** compute (only Google Cloud Run for now - *contibutions are welcome* 🤗)
+> 2. ⚡ Destination Connectors (only BigQuery for now - *contibutions are welcome* 🤗) which store `logs` and `states` in addition to data. Thus, there is **no need for a database any more!**
+> 3. ⚡ Examples to deploy to **serverless** compute (only Google Cloud Run for now - *contibutions are welcome* 🤗)
 
 
 ## Install
@@ -75,6 +75,12 @@ airbyte_source_executable = 'docker run --rm -i airbyte/source-surveymonkey:late
 source = AirbyteSource(airbyte_source_executable, config)
 sample_configured_catalog = source.sample_configured_catalog
 ```
+
+
+## Deploy
+
+To deploy to Cloud Run job, edit Dockerfile to pick the Airbyte source you like then run:
+
 
 
 ## Limitations
