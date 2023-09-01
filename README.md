@@ -13,7 +13,7 @@ At [Unytics](https://www.linkedin.com/company/unytics/), we ❤️ [Airbyte](htt
 
 Airbyte provides a very nice UI for configuring and orchestrating connectors. However, it comes with a lot of parts to understand and manage: a server, a database, an orchestrator, a frontend, etc.
 
-> **We wanted a simple tool to manage Airbyte connectors, run them locally or deploy them in *serverless* mode.**
+> **👉 We wanted a simple tool to manage Airbyte connectors, run them locally or deploy them in *serverless* mode.**
 
 
 ## Features
