@@ -16,18 +16,18 @@ class AirbyteSource:
         self.config = config
         self.configured_catalog = configured_catalog
 
-    def run(self, action):
+    def _run(self, action):
         with tempfile.TemporaryDirectory() as temp_dir:
             command = f'{self.exec} {action}'
-            needs_config = action != 'spec'
+            needs_config = (action != 'spec')
             if needs_config:
-                assert self.config, 'config argument is missing'
+                assert self.config, 'config attribute is not defined'
                 filename = f'{temp_dir}/config.json'
                 json.dump(self.config, open(filename, 'w', encoding='utf-8'))
                 command += f' --config {filename}'
-            needs_configured_catalog = action == 'read'
+            needs_configured_catalog = (action == 'read')
             if needs_configured_catalog:
-                assert self.configured_catalog, 'confiured_catalog argument is missing'
+                assert self.configured_catalog, 'configured_catalog attribute is not defined'
                 filename = f'{temp_dir}/catalog.json'
                 json.dump(self.configured_catalog, open(filename, 'w', encoding='utf-8'))
                 command += f' --catalog {filename}'
@@ -40,13 +40,13 @@ class AirbyteSource:
                     raise AirbyteSourceException(message['trace']['error.message'])
                 yield message
 
-    def run_and_return_first_message(self, command):
-        messages = self.run(command)
+    def _run_and_return_first_message(self, command):
+        messages = self._run(command)
         return next(messages)
 
     @property
     def spec(self):
-        message = self.run_and_return_first_message('spec')
+        message = self._run_and_return_first_message('spec')
         return message['spec']
 
     @property
@@ -56,7 +56,7 @@ class AirbyteSource:
 
     @property
     def catalog(self):
-        message = self.run_and_return_first_message('discover')
+        message = self._run_and_return_first_message('discover')
         return message['catalog']
 
     @property
@@ -79,9 +79,13 @@ class AirbyteSource:
 
     @property
     def connection_status(self):
-        message = self.run_and_return_first_message('check')
+        message = self._run_and_return_first_message('check')
         return message['connectionStatus']
 
     @property
-    def messages(self):
-        return self.run('read')
+    def first_message(self):
+        message = self._run_and_return_first_message('read')
+        return message['record']
+
+    def read(self):
+        return self._run('read')
