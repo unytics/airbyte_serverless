@@ -117,4 +117,4 @@ class BigQueryDestination(BaseDestination):
             limit 1
         ''').result()
         rows = list(rows)
-        return rows[0].state if rows else {}
+        return json.loads(rows[0].state) if rows else {}
