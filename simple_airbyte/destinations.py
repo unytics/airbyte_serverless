@@ -23,6 +23,7 @@ class BaseDestination:
 class BigQueryDestination(BaseDestination):
 
     def __init__(self, catalog, dataset='', buffer_size_max=10000):
+        assert dataset, 'dataset argument must be defined'
         try:
             project, _ = dataset.split('.')
         except:
