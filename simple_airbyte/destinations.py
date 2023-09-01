@@ -48,7 +48,7 @@ class BigQueryDestination(BaseDestination):
                 _airbyte_job_started_at timestamp options(description="Extract-load job start timestamp"),
                 _airbyte_slice_started_at timestamp options(description="When incremental mode is used, data records are emitted by chunks a.k.a. slices. At the end of each slice, a state record is emitted to store a checkpoint. This column stores the timestamp when the slice started"),
                 _airbyte_emitted_at timestamp options(description="Record ingestion time into BigQuery"),
-                _airbyte_data string options(description="Record data as json string")
+                _airbyte_data json options(description="Record data as json")
             )
             partition by date(_airbyte_emitted_at)
             options(
@@ -92,21 +92,19 @@ class BigQueryDestination(BaseDestination):
                     buffer = []
                     self.slice_started_at = datetime.datetime.utcnow().isoformat()
                 stream = new_stream
-                buffer.append(json.dumps(message['record']['data'], ensure_ascii=False))
+                buffer.append(message['record']['data'])
                 if len(buffer) > self.buffer_size_max:
                     self.insert_rows(stream, buffer)
                     buffer = []
             elif message['type'] == 'STATE':
                 self.insert_rows(stream, buffer)
                 buffer = []
-                self.insert_rows('airbyte_states', [json.dumps(message['state'])])
+                self.insert_rows('airbyte_states', [message['state']])
                 self.slice_started_at = datetime.datetime.utcnow().isoformat()
             elif message['type'] == 'LOG':
-                message = json.dumps(message['log'])
-                self.insert_rows('airbyte_logs', [message])
+                self.insert_rows('airbyte_logs', [message['log']])
             elif message['type'] == 'TRACE':
-                message = json.dumps(message['trace'])
-                self.insert_rows('airbyte_logs', [message])
+                self.insert_rows('airbyte_logs', [message['trace']])
             else:
                 raise NotImplementedError(f'message type {message["type"]} is not managed yet')
         self.insert_rows(stream, buffer)
@@ -119,4 +117,4 @@ class BigQueryDestination(BaseDestination):
             limit 1
         ''').result()
         rows = list(rows)
-        return json.loads(rows[0].state) if rows else {}
+        return rows[0].state if rows else {}
