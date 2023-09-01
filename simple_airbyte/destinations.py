@@ -71,7 +71,7 @@ class BigQueryDestination(BaseDestination):
                 '_airbyte_job_started_at': self.job_started_at,
                 '_airbyte_slice_started_at': self.slice_started_at,
                 '_airbyte_emitted_at': now,
-                '_airbyte_data': record,
+                '_airbyte_data': json.dumps(record, ensure_ascii=False),
             }
             for record in records
         ]
