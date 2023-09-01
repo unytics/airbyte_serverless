@@ -14,7 +14,7 @@ class AirbyteSource:
     def __init__(self, exec, config=None, configured_catalog=None):
         self.exec = exec
         self.config = config
-        self.configured_catalog = configured_catalog
+        self._configured_catalog = configured_catalog
 
     def _run(self, action):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -31,7 +31,6 @@ class AirbyteSource:
                 filename = f'{temp_dir}/catalog.json'
                 json.dump(self.configured_catalog, open(filename, 'w', encoding='utf-8'))
                 command += f' --catalog {filename}'
-            print(command)
             process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
             for line in iter(process.stdout.readline, b""):
                 content = line.decode().strip()
@@ -48,6 +47,16 @@ class AirbyteSource:
     def spec(self):
         message = self._run_and_return_first_message('spec')
         return message['spec']
+
+    @property
+    def config_spec(self):
+        spec = self.spec
+        return spec['connectionSpecification']
+
+    @property
+    def documentation_url(self):
+        spec = self.spec
+        return spec['documentationUrl']
 
     @property
     def sample_config(self):
@@ -72,6 +81,10 @@ class AirbyteSource:
             for stream in catalog['streams']
         ]
         return catalog
+
+    @property
+    def configured_catalog(self):
+        return self._configured_catalog or self.sample_configured_catalog
 
     @property
     def streams(self):
