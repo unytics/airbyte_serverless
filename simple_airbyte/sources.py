@@ -34,13 +34,16 @@ class AirbyteSource:
             for line in iter(process.stdout.readline, b""):
                 content = line.decode().strip()
                 message = json.loads(content)
-                if message['type'] == 'TRACE':
-                    raise AirbyteSourceException(json.dumps(message['trace']))
+                if message.get('trace', {}).get('error'):
+                    raise AirbyteSourceException(json.dumps(message['trace']['error']))
                 yield message
 
     def _run_and_return_first_message(self, action):
         messages = self._run(action)
-        message = next((message for message in messages if message['type'] != 'LOG'), None)
+        message = next(
+            (message for message in messages if message['type'] not in ['LOG', 'TRACE']),
+            None
+        )
         assert message is not None, f'No message returned by AirbyteSource with action `{action}`'
         return message
 
