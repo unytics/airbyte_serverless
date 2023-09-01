@@ -35,7 +35,7 @@ class AirbyteSource:
                 content = line.decode().strip()
                 message = json.loads(content)
                 if message['type'] == 'TRACE':
-                    raise AirbyteSourceException(message['trace']['error.message'])
+                    raise AirbyteSourceException(json.dumps(message['trace']))
                 yield message
 
     def _run_and_return_first_message(self, action):
