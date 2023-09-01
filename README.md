@@ -54,7 +54,7 @@ connection.run('read')
 
 ### Generate sample `config` for `SurveyMonkey`
 
-To run the command above, you will need to generate a sample config and adapt it to match your connection.
+To run the command above, you will need to provide a `config` for SurveyMonkey connector. To do so, the easiest is to generate a `sample_config` and adapt it to match your connection.
 
 ```python
 from simple_airbyte.sources import AirbyteSource
