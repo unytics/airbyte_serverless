@@ -63,19 +63,18 @@ TEMPLATE = jinja2.Template('''
 
 {%- macro render_root(root, is_commented) %}
 {%- for f in root %}
-  {%- if f.type == "object" and not f.oneOf %}
-  {{- render_object_field(f)|indent(2, False) }}
-  {%- elif f.oneOf %}
-  {{- render_one_of(f)|indent(2, False) }}
-  {%- elif f.is_array_of_objects %}
-  {{- render_array_of_objects(f)|indent(2, False) }}
-  {%- else %}
-  {{ render_field(f, is_commented=is_commented) }}
-  {%- endif %}
+{%- if f.type == "object" and not f.oneOf %}
+{{- render_object_field(f)|indent(2, False) }}
+{%- elif f.oneOf %}
+{{- render_one_of(f)|indent(2, False) }}
+{%- elif f.is_array_of_objects %}
+{{- render_array_of_objects(f)|indent(2, False) }}
+{%- else %}
+{{ render_field(f, is_commented=is_commented) }}
+{%- endif %}
 {%- endfor %}
 {%- endmacro %}
 
-configuration:
 {%- for root in configuration_fields %}
 {%- if loop.first %}
 {{- render_root(root, is_commented=False)}}

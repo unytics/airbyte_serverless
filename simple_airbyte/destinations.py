@@ -1,31 +1,7 @@
-import os
 import json
-import inspect
 import datetime
 import uuid
 
-import airbyte_cdk
-
-from .utils import print_info
-
-
-
-def create_file_or_try_to_open(filename):
-    try:
-        open(filename, 'a').close()
-    except:
-        raise ValueError(f'Cannot create or open file {filename}')
-
-
-def get_latest_line_of_file(filename):
-    with open(filename, 'rb') as f:
-        try:  # catch OSError in case of a one line file
-            f.seek(-2, os.SEEK_END)
-            while f.read(1) != b'\n':
-                f.seek(-2, os.SEEK_CUR)
-        except OSError:
-            f.seek(0)
-        return f.readline().decode(encoding='utf-8')
 
 
 class BaseDestination:
@@ -40,81 +16,18 @@ class BaseDestination:
     def get_logs(self):
         raise NotImplementedError()
 
-    def run(self, messages):
+    def load(self, messages):
         raise NotImplementedError()
-
-    @classmethod
-    def get_class_name(cls):
-        return cls.__name__.lower().replace('destination', '')
-
-    @classmethod
-    def get_init_help(cls):
-        argspec = inspect.getfullargspec(cls.__init__)
-        if argspec.defaults:
-            args = argspec.args[:-len(argspec.defaults)]
-        else:
-            args = argspec.args
-        args = ', '.join([arg.upper() for arg in args if arg not in ['self', 'catalog']])
-        return f'{cls.get_class_name()}({args})'
-
-
-class PrintDestination(BaseDestination):
-
-    def run(self, messages):
-        for message in messages:
-            print(message.json(exclude_unset=True))
-
-
-class LocalJsonDestination(BaseDestination):
-
-    def __init__(self, catalog, folder):
-        super().__init__(catalog)
-        os.makedirs(folder, exist_ok=True)
-        self.states_file = f'{folder}/states.jsonl'
-        self.logs_file = f'{folder}/logs.jsonl'
-        self.stream_file = lambda stream: f'{folder}/{stream}.jsonl'
-        create_file_or_try_to_open(self.states_file)
-        create_file_or_try_to_open(self.logs_file)
-        for stream in self.streams:
-            create_file_or_try_to_open(self.stream_file(stream))
-
-    def get_state(self):
-        content = get_latest_line_of_file(self.states_file)
-        if not content:
-            return {}
-        else:
-            state = json.loads(content)
-            return state['data']
-
-    def run(self, messages):
-        states_file = open(self.states_file, 'a', encoding='utf-8')
-        logs_file = open(self.logs_file, 'a', encoding='utf-8')
-        streams_files = {
-            stream: open(self.stream_file(stream), 'a', encoding='utf-8')
-            for stream in self.streams
-        }
-        try:
-            for message in messages:
-                if message.type == airbyte_cdk.models.Type.LOG:
-                    message = message.log.json(exclude_unset=True)
-                    print_info(message)
-                    logs_file.write(message + '\n')
-                elif message.type == airbyte_cdk.models.Type.RECORD:
-                    file = streams_files[message.record.stream]
-                    row = json.dumps(message.record.data)
-                    file.write(row + '\n')
-                elif message.type == airbyte_cdk.models.Type.STATE:
-                    states_file.write(message.state.json(exclude_unset=True) + '\n')
-        finally:
-            states_file.close()
-            logs_file.close()
-            for stream_file in streams_files.values():
-                stream_file.close()
 
 
 class BigQueryDestination(BaseDestination):
 
-    def __init__(self, catalog, dataset, buffer_size_max=10000):
+    def __init__(self, catalog, dataset='', buffer_size_max=10000):
+        try:
+            project, _ = dataset.split('.')
+        except:
+            assert False, '`BigQueryDestination.dataset` must be like `project.dataset`'
+
         super().__init__(catalog)
         self.dataset = dataset
         self.buffer_size_max = buffer_size_max
@@ -138,18 +51,18 @@ class BigQueryDestination(BaseDestination):
             )
             partition by date(_airbyte_emitted_at)
             options(
-                description="{table} records ingested by bigloader"
+                description="{table} records ingested by simple_airbyte"
             )
         '''
         import google.cloud.bigquery
-        self.bigquery = google.cloud.bigquery.Client()
+        self.bigquery = google.cloud.bigquery.Client(project=project)
         for table in self.tables.values():
             self.bigquery.query(create_table_query.format(dataset=dataset, table=table)).result()
 
     def insert_rows(self, table, records):
         if not records:
             return
-        table = f'{self.dataset}.{table}'
+        table = f'{self.dataset}.{self.tables[table]}'
         now  = datetime.datetime.utcnow().isoformat()
         records = [
             {
@@ -165,35 +78,37 @@ class BigQueryDestination(BaseDestination):
         if errors:
             raise ValueError(f'Could not insert rows to BigQuery table {table}. Errors: {errors}')
 
-    def run(self, messages):
+    def load(self, messages):
         self.job_started_at = datetime.datetime.utcnow().isoformat()
         self.slice_started_at = self.job_started_at
         buffer = []
-        stream_table = None
+        stream = None
         for message in messages:
-            if message.type == airbyte_cdk.models.Type.RECORD:
-                new_stream_table = self.tables[message.record.stream]
-                if new_stream_table != stream_table and stream_table is not None:
-                    self.insert_rows(stream_table, buffer)
+            if message['type'] == 'RECORD':
+                new_stream = message['record']['stream']
+                if new_stream != stream and stream is not None:
+                    self.insert_rows(stream, buffer)
                     buffer = []
                     self.slice_started_at = datetime.datetime.utcnow().isoformat()
-                stream_table = new_stream_table
-                buffer.append(json.dumps(message.record.data))
+                stream = new_stream
+                buffer.append(json.dumps(message['record']['data']))
                 if len(buffer) > self.buffer_size_max:
-                    self.insert_rows(stream_table, buffer)
+                    self.insert_rows(stream, buffer)
                     buffer = []
-            elif message.type == airbyte_cdk.models.Type.STATE:
-                self.insert_rows(stream_table, buffer)
+            elif message['type'] == 'STATE':
+                self.insert_rows(stream, buffer)
                 buffer = []
-                self.insert_rows(self.tables['airbyte_states'], [message.state.json(exclude_unset=True)])
+                self.insert_rows('airbyte_states', [json.dumps(message['state'])])
                 self.slice_started_at = datetime.datetime.utcnow().isoformat()
-            elif message.type == airbyte_cdk.models.Type.LOG:
-                message = message.log.json(exclude_unset=True)
-                print_info(message)
-                self.insert_rows(self.tables['airbyte_logs'], [message])
+            elif message['type'] == 'LOG':
+                message = json.dumps(message['log'])
+                self.insert_rows('airbyte_logs', [message])
+            elif message['type'] == 'TRACE':
+                message = json.dumps(message['trace'])
+                self.insert_rows('airbyte_logs', [message])
             else:
-                raise NotImplementedError(f'message type {message.type} is not managed yet')
-        self.insert_rows(stream_table, buffer)
+                raise NotImplementedError(f'message type {message["type"]} is not managed yet')
+        self.insert_rows(stream, buffer)
 
     def get_state(self):
         rows = self.bigquery.query(f'''
@@ -204,18 +119,3 @@ class BigQueryDestination(BaseDestination):
         ''').result()
         rows = list(rows)
         return json.loads(rows[0].state) if rows else {}
-
-
-
-DESTINATIONS = {
-    destination.get_class_name(): destination
-    for destination in [LocalJsonDestination, BigQueryDestination, PrintDestination]
-}
-
-
-def create_destination(destination_arg, catalog):
-    destination, args = destination_arg.split('(')
-    args = args.replace(')', '').split(',')
-    args = [arg.strip() for arg in args if arg.strip()]
-    Destination = DESTINATIONS[destination]
-    return Destination(catalog, *args)

@@ -1,6 +1,7 @@
 import tempfile
 import subprocess
 import json
+import yaml
 
 from . import airbyte_utils
 
@@ -16,20 +17,29 @@ class AirbyteSource:
         self.config = config
         self._configured_catalog = configured_catalog
 
-    def _run(self, action):
+    def _run(self, action, state=None):
         with tempfile.TemporaryDirectory() as temp_dir:
             command = f'{self.exec} {action}'
+
             needs_config = (action != 'spec')
             if needs_config:
                 assert self.config, 'config attribute is not defined'
+                config = yaml.safe_load(self.config)
                 filename = f'{temp_dir}/config.json'
-                json.dump(self.config, open(filename, 'w', encoding='utf-8'))
+                json.dump(config, open(filename, 'w', encoding='utf-8'))
                 command += f' --config {filename}'
+
             needs_configured_catalog = (action == 'read')
             if needs_configured_catalog:
                 filename = f'{temp_dir}/catalog.json'
                 json.dump(self.configured_catalog, open(filename, 'w', encoding='utf-8'))
                 command += f' --catalog {filename}'
+
+            if state:
+                filename = f'{temp_dir}/state.json'
+                json.dump(state, open(filename, 'w', encoding='utf-8'))
+                command += f' --state {filename}'
+
             process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
             for line in iter(process.stdout.readline, b""):
                 content = line.decode().strip()
@@ -100,9 +110,9 @@ class AirbyteSource:
         return message['connectionStatus']
 
     @property
-    def first_message(self):
+    def first_record(self):
         message = self._run_and_return_first_message('read')
         return message['record']
 
-    def read(self):
-        return self._run('read')
+    def read(self, state=None):
+        return self._run('read', state=state)
