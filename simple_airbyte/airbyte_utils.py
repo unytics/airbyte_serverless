@@ -75,7 +75,6 @@ TEMPLATE = jinja2.Template('''
 {%- endfor %}
 {%- endmacro %}
 
-configuration:
 {%- for root in configuration_fields %}
 {%- if loop.first %}
 {{- render_root(root, is_commented=False)}}
