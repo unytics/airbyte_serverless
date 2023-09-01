@@ -92,7 +92,7 @@ class BigQueryDestination(BaseDestination):
                     buffer = []
                     self.slice_started_at = datetime.datetime.utcnow().isoformat()
                 stream = new_stream
-                buffer.append(json.dumps(message['record']['data']))
+                buffer.append(json.dumps(message['record']['data'], ensure_ascii=False))
                 if len(buffer) > self.buffer_size_max:
                     self.insert_rows(stream, buffer)
                     buffer = []
