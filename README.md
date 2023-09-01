@@ -66,7 +66,7 @@ sample_config = source.sample_config
 
 ### [OPTIONAL] Generate sample `configured_catalog` to choose which data to move
 
-In the above example, if you set `configured_catalog` to `None`, the connector will try to move all the data it can to your destination. You may want to define which `stream` you want to sync. To do so, the easiest is to generate a sample `configured_catalog`
+In the above example, if you set `configured_catalog` to `None`, the connector will try to move all the data it can to your destination. You may want to define which `stream` you want to sync. To do so, the easiest is to generate a sample `configured_catalog` and adapt it.
 
 ```python
 from simple_airbyte.sources import AirbyteSource
