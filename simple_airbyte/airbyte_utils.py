@@ -41,24 +41,24 @@ TEMPLATE = jinja2.Template('''
 {%- macro render_one_of(field) %}
 {{ field.name }}:
 {%- for one_of_value in field.one_of_values %}
-  {%- if loop.first %}
-  ## -------- Pick one valid structure among the examples below: --------
-  {{- render_sub_fields(one_of_value, False)|indent(2, False) }}
-  {%- else %}
-  ## -------- Another valid structure for {{ field.name }}: --------
-  {{- render_sub_fields(one_of_value, True)|indent(2, False) }}
-  {%- endif %}
+{%- if loop.first %}
+## -------- Pick one valid structure among the examples below: --------
+{{- render_sub_fields(one_of_value, False)|indent(2, False) }}
+{%- else %}
+## -------- Another valid structure for {{ field.name }}: --------
+{{- render_sub_fields(one_of_value, True)|indent(2, False) }}
+{%- endif %}
 {%- endfor %}
 {%- endmacro %}
 
 {%- macro render_object_field(field) %}
 {{ field.name }}:
-  {{- render_sub_fields(field.object_properties, is_commented=False)|indent(2, False)}}
+{{- render_sub_fields(field.object_properties, is_commented=False)|indent(2, False)}}
 {%- endmacro %}
 
 {%- macro render_array_of_objects(field) %}
 {{ field.name }}:
-  {{- render_array_sub_fields(field.array_items, is_commented=False)|indent(2, False)}}
+{{- render_array_sub_fields(field.array_items, is_commented=False)|indent(2, False)}}
 {%- endmacro %}
 
 {%- macro render_root(root, is_commented) %}
