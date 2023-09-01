@@ -27,7 +27,6 @@ class AirbyteSource:
                 command += f' --config {filename}'
             needs_configured_catalog = (action == 'read')
             if needs_configured_catalog:
-                assert self.configured_catalog, 'configured_catalog attribute is not defined'
                 filename = f'{temp_dir}/catalog.json'
                 json.dump(self.configured_catalog, open(filename, 'w', encoding='utf-8'))
                 command += f' --catalog {filename}'
@@ -39,9 +38,11 @@ class AirbyteSource:
                     raise AirbyteSourceException(message['trace']['error.message'])
                 yield message
 
-    def _run_and_return_first_message(self, command):
-        messages = self._run(command)
-        return next(messages)
+    def _run_and_return_first_message(self, action):
+        messages = self._run(action)
+        message = next((message for message in messages if message['type'] != 'LOG'), None)
+        assert message is not None, f'No message returned by AirbyteSource with action `{action}`'
+        return message
 
     @property
     def spec(self):
