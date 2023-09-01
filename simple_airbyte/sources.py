@@ -35,10 +35,10 @@ class AirbyteSource:
         messages = self.run(command)
         return next(messages)
 
-    def generate_config_sample(self):
+    @property
+    def sample_config(self):
         spec = self.spec
-        yaml_config = airbyte_utils.generate_connection_yaml_config_sample(spec)
-        return yaml_config
+        return airbyte_utils.generate_connection_yaml_config_sample(spec)
 
     @property
     def spec(self):
