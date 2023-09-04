@@ -8,6 +8,7 @@ setuptools.setup(
     packages=['simple_airbyte'],
     version='0.2',
     author='Unytics',
+    author_email='paul.marcombes@unytics.io',
     description='Airbyte made easy',
     long_description=long_description,
     long_description_content_type='text/markdown',
