@@ -6,7 +6,7 @@ with open('README.md', 'r') as fh:
 setuptools.setup(
     name='simple_airbyte',
     packages=['simple_airbyte'],
-    version='0.0.1',
+    version='0.2',
     author='Unytics',
     description='Airbyte made easy',
     long_description=long_description,
