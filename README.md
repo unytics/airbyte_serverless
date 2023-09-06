@@ -38,14 +38,14 @@
 > 3. ⚡ Examples to deploy to **serverless** compute (only Google Cloud Run for now - *contibutions are welcome* 🤗)
 
 
-## Install
+
+## Getting Started
+
+## 0. Install
 
 ```bash
 pip install simple-airbyte
 ```
-
-
-## Getting Started
 
 ### 1. Create an Airbyte Source from an Airbyte Source Executable
 
