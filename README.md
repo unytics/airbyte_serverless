@@ -121,8 +121,6 @@ print(source.first_record)
 
 #### 6. Create a destination and run Extract-Load
 
-To stream `data` from `source` to `destination` run:
-
 ```python
 from airbyte_serverless.destinations import BigQueryDestination
 
