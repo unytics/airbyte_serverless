@@ -15,7 +15,7 @@ class AirbyteSource:
     def __init__(self, exec, config=None, configured_catalog=None):
         self.exec = exec
         self.config = config
-        self._configured_catalog = configured_catalog
+        self.configured_catalog = configured_catalog
 
     def _run(self, action, state=None):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -73,9 +73,15 @@ class AirbyteSource:
         return spec['documentationUrl']
 
     @property
-    def sample_config(self):
-        spec = self.spec
-        return airbyte_utils.generate_connection_yaml_config_sample(spec)
+    def config(self):
+        if self._config is None:
+            spec = self.spec
+            self._config = airbyte_utils.generate_connection_yaml_config_sample(spec)
+        return self._config
+
+    @config.setter
+    def config(self, config):
+        self._config = config
 
     @property
     def catalog(self):
@@ -83,22 +89,23 @@ class AirbyteSource:
         return message['catalog']
 
     @property
-    def sample_configured_catalog(self):
-        catalog = self.catalog
-        catalog['streams'] = [
-            {
-                "stream": stream,
-                "sync_mode": "incremental" if 'incremental' in stream['supported_sync_modes'] else 'full_refresh',
-                "destination_sync_mode": "append",
-                "cursor_field": stream.get('default_cursor_field', [])
-            }
-            for stream in catalog['streams']
-        ]
-        return catalog
-
-    @property
     def configured_catalog(self):
-        return self._configured_catalog or self.sample_configured_catalog
+        if self._configured_catalog is None:
+            self._configured_catalog = self.catalog
+            self._configured_catalog['streams'] = [
+                {
+                    "stream": stream,
+                    "sync_mode": "incremental" if 'incremental' in stream['supported_sync_modes'] else 'full_refresh',
+                    "destination_sync_mode": "append",
+                    "cursor_field": stream.get('default_cursor_field', [])
+                }
+                for stream in self._configured_catalog['streams']
+            ]
+        return self._configured_catalog
+
+    @configured_catalog.setter
+    def configured_catalog(self, configured_catalog):
+        self._configured_catalog = configured_catalog
 
     @property
     def streams(self):
@@ -114,5 +121,5 @@ class AirbyteSource:
         message = self._run_and_return_first_message('read')
         return message['record']
 
-    def read(self, state=None):
+    def extract(self, state=None):
         return self._run('read', state=state)
