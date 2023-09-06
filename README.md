@@ -14,27 +14,21 @@
 
 When you want to deploy Airbyte open-source yourself it comes with batteries included: you'll get a server, workers, database, UI, orchestrator, connectors, secret manager, logs manager, etc. All of this is very well packaged and deployable on Kubernetes.
 
-While we believe this is great for most people we strive for lightweight and simple assets to deploy and maintain. What's more, we ❤️ `serverless` to rely on fully managed services 😁.
-
-
-Questions that may arise when deploying airbyte open-source yourself include:
-
-- How do you manage Authentication if I have a UI?
-- How do my connectors scale?
-- What do I need to monitor? How?
-- How can we backup and restore the database in case of outages?
-
-While the documentation of Airbyte is great and complete, that still represents a lot of questions.
-
+While we believe this is great for most people we strive for lightweight and simple assets to deploy and maintain. What's more, we ❤️ `serverless.
 
 > **👉 We wanted a simple tool to manage Airbyte connectors, run them locally or deploy them in *serverless* mode.**
 
 
-That's why `airbyte_serverless` is *LESS* than `airbyte`.
-
-
-
 ## How `airbyte_serverless` is *LESS* than `airbyte` ?
+
+### Comparing Architectures
+![logo_and_name_4_3 (2)](https://github.com/unytics/airbyte_serverless/assets/111615732/7c73318b-610c-4cf5-9b1d-7ae692721d1b)
+<p align="center">
+    <em>Image taken from [Airbyte Documentation]([url](https://docs.airbyte.com/understanding-airbyte/high-level-view))</em>
+</p>
+
+![logo_and_name_4_3 (3)](https://github.com/unytics/airbyte_serverless/assets/111615732/cbd08592-b996-4493-9996-1fd12708c615)
+
 
 ### 1. `airbyte` comes with a database | `airbyte_serverless` does NOT.
 
