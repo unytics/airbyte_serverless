@@ -18,7 +18,7 @@
 > **👉 We wanted a simple tool to manage Airbyte connectors, run them locally or deploy them in *serverless* mode.**
 
 
-### Comparing Airbyte Open-Source Platform with `airbyte_serverless`
+**Comparing Airbyte Open-Source Platform with `airbyte_serverless`**
 
 
 | Airbyte Open-Source Platform    | Airbyte Serverless |
