@@ -21,6 +21,15 @@
 ## How `airbyte_serverless` is *LESS* than `airbyte` ?
 
 ### Comparing Architectures
+
+| Airbyte Open-Source Platform    | Airbyte Serverless |
+| -------- | ------- |
+| **Has database**  | **Has NO database**<br>- The destination stores the `state` (the track of where sync stops).<br>- Connectors Configurations can be stored in config files  |
+| **Has a UI to edit configuration** | Configurations are generated documented yaml files that one can edit and version |
+| **Is scalable**<br>if deployed on autoscaled Kubernetes Cluster   | **Is scalable**<br>Each connector is deployed independently of each other. You can have as many as you want. |
+| **Has many parts** | **Has only one docker image per deployment**<br>A custom destination is addded on the source connector image |
+
+
 ![logo_and_name_4_3 (2)](https://github.com/unytics/airbyte_serverless/assets/111615732/7c73318b-610c-4cf5-9b1d-7ae692721d1b)
 <p align="center">
     <em>Image taken from <a href="https://docs.airbyte.com/understanding-airbyte/high-level-view">Airbyte Documentation</a></em>
@@ -28,36 +37,8 @@
 
 ![logo_and_name_4_3 (4)](https://github.com/unytics/airbyte_serverless/assets/111615732/1f25326b-1974-4b6a-bfef-016ce0ed69bd)
 
-| Airbyte    | Airbyte Serverless |
-| -------- | ------- |
-| **Has database**  | **Has NO database**<br>The destination stores the `state` (the track of where sync stops). Connectors Configurations can be stored in config files  |
-| February | $80     |
-| March    | $420    |
 
-
-### 1. `airbyte` comes with a database | `airbyte_serverless` does NOT.
-
-Airbyte database stores connectors configuration and the `state` (the track of where the latest sync ended)
-
-Instead
-- We rely on the destination to store and manage the `state`
-- Connectors configuration can be managed as configuration files that you put on git.
-
-
-### 2. `airbyte` comes with a UI | `airbyte_serverless` does NOT.
-
-In Airbyte connectors configuration is very easy to set up with a clean UI.
-
-Instead, connectors configuration is initiated with generated documented-yaml-files that you can update and version in git. *(We rely on airbyte source code of their CLI octavia to generate these yaml)*
-
-
-### 3. `airbyte` comes with workers  | `airbyte_serverless` does NOT.
-
-Airbyte open-source can be deployed on a VM or on Kubernetes. Workers are containers
-
-
-
-2. `airbyte` comes with a UI | `airbyte_serverless` does NOT. <br>
+## Features
 
 > 1. ⚡ A lightweight python wrapper around any Airbyte Source executable. It comes with:
 >     - sample `config` generation in yaml to ease configuration.
