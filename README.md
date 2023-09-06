@@ -1,5 +1,5 @@
 
-![logo](https://raw.githubusercontent.com/unytics/simple_airbyte/main/logo.png)
+![logo](https://repository-images.githubusercontent.com/685582769/06c7a51b-fb1d-4b29-98da-10600e3e0fa8)
 
 <p align="center">
     <em>Airbyte made simple</em>
