@@ -8,7 +8,7 @@
 
 ---
 
-## Why `simple_airbyte` ?
+## Why `airbyte_serverless` ?
 
 At [Unytics](https://www.linkedin.com/company/unytics/), we ❤️ [Airbyte](https://airbyte.com/) which provides a catalog of open-source connectors to move your data from any source to your data-warehouse.
 
@@ -19,7 +19,7 @@ Airbyte provides a very nice UI for configuring and orchestrating connectors. Ho
 
 ## Features
 
-`simple_airbyte` offers:
+`airbyte_serverless` offers:
 
 > 1. ⚡ A lightweight python wrapper around any Airbyte Source executable. It comes with:
 >     - sample `config` generation in yaml to ease configuration.
@@ -43,7 +43,7 @@ If you have docker installed on your laptop, the easiest is to write the followi
 
 
 ```python
-from simple_airbyte.sources import AirbyteSource
+from airbyte_serverless.sources import AirbyteSource
 
 airbyte_source_executable = 'docker run --rm -i airbyte/source-surveymonkey:latest'
 source = AirbyteSource(airbyte_source_executable)
@@ -114,7 +114,7 @@ print(source.first_record)
 To stream `data` from `source` to `destination` run:
 
 ```python
-from simple_airbyte.destinations import BigQueryDestination
+from airbyte_serverless.destinations import BigQueryDestination
 
 destination = BigQueryDestination(dataset='YOUR-PROJECT.YOUR_DATASET')
 data = source.extract()
@@ -138,8 +138,8 @@ destination.load(data)
 
 ```python
 
-from simple_airbyte.sources import AirbyteSource
-from simple_airbyte.destinations import BigQueryDestination
+from airbyte_serverless.sources import AirbyteSource
+from airbyte_serverless.destinations import BigQueryDestination
 
 airbyte_source_executable = 'docker run --rm -i airbyte/source-surveymonkey:latest'
 config = 'YOUR CONFIG'

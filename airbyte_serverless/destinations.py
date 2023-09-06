@@ -112,7 +112,7 @@ class BigQueryDestination(BaseDestination):
             )
             partition by date(_airbyte_emitted_at)
             options(
-                description="{table} records ingested by simple_airbyte"
+                description="{table} records ingested by airbyte_serverless"
             )
         ''').result()
         self.created_tables.append(table)

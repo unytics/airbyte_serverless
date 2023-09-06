@@ -9,15 +9,15 @@ with open('README.md', 'r', encoding='utf-8') as fh:
 
 
 setuptools.setup(
-    name='simple_airbyte',
-    packages=['simple_airbyte'],
+    name='airbyte_serverless',
+    packages=['airbyte_serverless'],
     version='0.2',
     author='Unytics',
     author_email='paul.marcombes@unytics.io',
     description='Airbyte made easy',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    download_url=f'https://github.com/unytics/simple_airbyte/archive/refs/tags/v{VERSION}.tar.gz',
+    download_url=f'https://github.com/unytics/airbyte_serverless/archive/refs/tags/v{VERSION}.tar.gz',
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',
