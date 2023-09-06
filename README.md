@@ -26,7 +26,7 @@
     <em>Image taken from <a href="https://docs.airbyte.com/understanding-airbyte/high-level-view">Airbyte Documentation</a></em>
 </p>
 
-![logo_and_name_4_3 (3)](https://github.com/unytics/airbyte_serverless/assets/111615732/cbd08592-b996-4493-9996-1fd12708c615)
+![logo_and_name_4_3 (4)](https://github.com/unytics/airbyte_serverless/assets/111615732/1f25326b-1974-4b6a-bfef-016ce0ed69bd)
 
 
 ### 1. `airbyte` comes with a database | `airbyte_serverless` does NOT.
