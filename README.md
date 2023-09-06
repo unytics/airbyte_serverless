@@ -23,7 +23,7 @@
 ### Comparing Architectures
 ![logo_and_name_4_3 (2)](https://github.com/unytics/airbyte_serverless/assets/111615732/7c73318b-610c-4cf5-9b1d-7ae692721d1b)
 <p align="center">
-    <em>Image taken from [Airbyte Documentation]([url](https://docs.airbyte.com/understanding-airbyte/high-level-view))</em>
+    <em>Image taken from [Airbyte Documentation](https://docs.airbyte.com/understanding-airbyte/high-level-view)</em>
 </p>
 
 ![logo_and_name_4_3 (3)](https://github.com/unytics/airbyte_serverless/assets/111615732/cbd08592-b996-4493-9996-1fd12708c615)
