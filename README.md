@@ -28,6 +28,12 @@
 
 ![logo_and_name_4_3 (4)](https://github.com/unytics/airbyte_serverless/assets/111615732/1f25326b-1974-4b6a-bfef-016ce0ed69bd)
 
+| Airbyte    | Airbyte Serverless |
+| -------- | ------- |
+| **Has database**  | **Has NO database**<br>The destination stores the `state` (the track of where sync stops). Connectors Configurations can be stored in config files  |
+| February | $80     |
+| March    | $420    |
+
 
 ### 1. `airbyte` comes with a database | `airbyte_serverless` does NOT.
 
