@@ -44,7 +44,7 @@
 #### 0. Install
 
 ```bash
-pip install simple-airbyte
+pip install airbyte-serverless
 ```
 
 #### 1. Create an Airbyte Source from an Airbyte Source Executable
