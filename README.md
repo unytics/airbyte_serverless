@@ -174,4 +174,8 @@ We believe, [like Airbyte](https://docs.airbyte.com/understanding-airbyte/basic-
 Any contribution is more than welcome 🤗!
 - Add a ⭐ on the repo to show your support
 - Raise an issue to raise a bug or suggest improvements
-- Open a PR!
+- Open a PR! Below are some suggestions:
+  - implement the `get_logs` method of `BigQueryDestination`
+  - add a new destination connector (Cloud Storage?)
+  - add more serverless deployment examples.
+  - implement optional post-processing (replace, upsert data at destination instead of append?)
