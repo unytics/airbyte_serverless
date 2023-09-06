@@ -23,7 +23,7 @@
 
 | Airbyte Open-Source Platform    | Airbyte Serverless |
 | -------- | ------- |
-| **Deployed on a VM or Kubernetes Cluster**  | **Deployed with Serverless**<br>- Each Airbyte source docker image is upgraded with a destination connector from `airbyte_serverless`.<br>- Each upgraded docker image can then be deployed as an isolated `Cloud Run Job` that can be scheduled and monitored with your managed Cloud services.  |
+| **Deployed on a VM or Kubernetes Cluster**  | **Deployed with Serverless**<br>- Each Airbyte source docker image is upgraded with a destination connector from `airbyte_serverless`<br>- Each upgraded docker image can then be deployed as an isolated `Cloud Run Job` (or `Cloud Run Service`)<br>- Cloud Run is natively monitored with metrics, dashboards, logs, error reporting, alerting, etc<br>- They can be scheduled or triggred upon cloud events  |
 | **Has database**  | **Has NO database**<br>- The destination stores the `state` (the track of where sync stops).<br>- Connectors Configurations can be stored in config files and versionned in git |
 | **Has a UI to edit configuration** | Configurations are generated as documented-yaml-files that one can edit and version |
 | **Is scalable**<br>if deployed on autoscaled Kubernetes Cluster   | **Is scalable**<br>Each connector is deployed independently of each other. You can have as many as you want. |
