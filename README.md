@@ -24,18 +24,12 @@
 
 | Airbyte Open-Source Platform    | Airbyte Serverless |
 | -------- | ------- |
-| **Has database**  | **Has NO database**<br>- The destination stores the `state` (the track of where sync stops).<br>- Connectors Configurations can be stored in config files  |
-| **Has a UI to edit configuration** | Configurations are generated documented yaml files that one can edit and version |
+| **Deployed on a VM or Kubernetes Cluster**  | **Deployed with Serverless**<br>- Each Airbyte source docker image is upgraded with a destination from `airbyte_serverless`.<br>- The unique docker image can then be deployed as an isolated `Cloud Run Job` that can be scheduled and monitored with your managed Cloud services.  |
+| **Has database**  | **Has NO database**<br>- The destination stores the `state` (the track of where sync stops).<br>- Connectors Configurations can be stored in config files and versionned in git |
+| **Has a UI to edit configuration** | Configurations are generated as documented-yaml-files that one can edit and version |
 | **Is scalable**<br>if deployed on autoscaled Kubernetes Cluster   | **Is scalable**<br>Each connector is deployed independently of each other. You can have as many as you want. |
-| **Has many parts** | **Has only one docker image per deployment**<br>A custom destination is addded on the source connector image |
 
 
-![logo_and_name_4_3 (2)](https://github.com/unytics/airbyte_serverless/assets/111615732/7c73318b-610c-4cf5-9b1d-7ae692721d1b)
-<p align="center">
-    <em>Image taken from <a href="https://docs.airbyte.com/understanding-airbyte/high-level-view">Airbyte Documentation</a></em>
-</p>
-
-![logo_and_name_4_3 (4)](https://github.com/unytics/airbyte_serverless/assets/111615732/1f25326b-1974-4b6a-bfef-016ce0ed69bd)
 
 
 ## Features
