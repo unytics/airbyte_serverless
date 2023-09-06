@@ -12,7 +12,7 @@
 
 > At [Unytics](https://www.linkedin.com/company/unytics/), we ❤️ [Airbyte](https://airbyte.com/) which provides a **catalog of open-source connectors to move your data from any source to your data-warehouse.**
 >
-> **Airbyte open-source is "batteries included"** 🔋. When you want to deploy it you'll get a server, workers, database, UI, orchestrator, connectors, secret manager, logs manager, etc. All of this is very well packaged and deployable on Kubernetes.
+> **Airbyte open-source is "batteries included"** 🔋. When you deploy it you'll get a server, workers, database, UI, orchestrator, connectors, secret manager, logs manager, etc. All of this is very well packaged and deployable on Kubernetes.
 > While we believe this is great for most people we strive for lightweight and simple assets to deploy and maintain. What's more, we ❤️ `serverless.
 >
 > **👉 We wanted a simple tool to manage Airbyte connectors, run them locally or deploy them in *serverless* mode.**
