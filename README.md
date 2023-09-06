@@ -18,9 +18,8 @@
 > **👉 We wanted a simple tool to manage Airbyte connectors, run them locally or deploy them in *serverless* mode.**
 
 
-## How `airbyte_serverless` is *LESS* than `airbyte` ?
+### `airbyte_serverless` is *LESS* than `airbyte`
 
-### Comparing Architectures
 
 | Airbyte Open-Source Platform    | Airbyte Serverless |
 | -------- | ------- |
