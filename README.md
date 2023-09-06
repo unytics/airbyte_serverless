@@ -24,7 +24,7 @@
 | Airbyte Open-Source Platform    | Airbyte Serverless |
 | -------- | ------- |
 | **Deployed on a VM or Kubernetes Cluster**  | **Deployed with Serverless**<br>- Each Airbyte source docker image is upgraded with a destination connector from `airbyte_serverless`<br>- Each upgraded docker image can then be deployed as an isolated `Cloud Run Job` (or `Cloud Run Service`)<br>- Cloud Run is natively monitored with metrics, dashboards, logs, error reporting, alerting, etc<br>- They can be scheduled or triggred upon cloud events  |
-| **Has database**  | **Has NO database**<br>- The destination stores the `state` (the track of where sync stops)<br>- The destination store the `logs` which can then be visualized with your preferred BI tool <br>- Connectors Configurations can be stored in config files and versionned in git |
+| **Has database**  | **Has NO database**<br>- The destination stores the `state` (the track of where sync stops)<br>- The destination stores the `logs` which can then be visualized with your preferred BI tool <br>- Connectors Configurations can be stored in config files and versionned in git |
 | **Has a UI to edit configuration** | **Configurations are generated as documented-yaml-files** that one can edit and version |
 | **Is scalable**<br>if deployed on autoscaled Kubernetes Cluster   | **Is scalable**<br>Each connector is deployed independently of each other. You can have as many as you want. |
 
@@ -41,13 +41,13 @@
 
 ## Getting Started
 
-## 0. Install
+#### 0. Install
 
 ```bash
 pip install simple-airbyte
 ```
 
-### 1. Create an Airbyte Source from an Airbyte Source Executable
+#### 1. Create an Airbyte Source from an Airbyte Source Executable
 
 If you have docker installed on your laptop, the easiest is to write the following code in a file `getting_started.py` (change `surveymonkey` with the source you want). Then, it should directly work when you run `python getting_started.py`. *If it does not, please raise an issue.*
 
@@ -72,7 +72,7 @@ source = AirbyteSource(airbyte_source_executable)
 </details>
 
 
-### 2. Update `config` for your Airbyte Source
+#### 2. Update `config` for your Airbyte Source
 
 Your Airbyte Source needs some config to be able to connect. Show a pre-filled `config` for your connector with:
 
@@ -89,14 +89,14 @@ YOUR UPDATED CONFIG
 ```
 
 
-### 3. Check your `config`
+#### 3. Check your `config`
 
 ```python
 print(source.connection_status)
 ```
 
 
-### 4. Update `configured_catalog` for your Airbyte Source
+#### 4. Update `configured_catalog` for your Airbyte Source
 
 The source `catalog` lists the available `streams` (think entities) that the source is able to retrieve. The `configured_catalog` specifies which `streams` to extract and how. Show the default `configured_catalog` with:
 
@@ -113,13 +113,13 @@ source.configured_catalog = {
 ```
 
 
-### 6. Test the retrieval of one data record
+#### 5. Test the retrieval of one data record
 
 ```python
 print(source.first_record)
 ```
 
-### 7. Create a destination and run Extract-Load
+#### 6. Create a destination and run Extract-Load
 
 To stream `data` from `source` to `destination` run:
 
@@ -132,7 +132,7 @@ destination.load(data)
 ```
 
 
-### 8. Run Extract-Load from where you stopped
+#### 7. Run Extract-Load from where you stopped
 
 The `state` keeps track from where the latest extract-load ended (for incremental extract-load).
 To start from this `state` run:
