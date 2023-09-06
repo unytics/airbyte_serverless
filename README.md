@@ -10,16 +10,55 @@
 
 ## Why `airbyte_serverless` ?
 
-At [Unytics](https://www.linkedin.com/company/unytics/), we ❤️ [Airbyte](https://airbyte.com/) which provides a catalog of open-source connectors to move your data from any source to your data-warehouse.
+> At [Unytics](https://www.linkedin.com/company/unytics/), we ❤️ [Airbyte](https://airbyte.com/) which provides a **catalog of open-source connectors to move your data from any source to your data-warehouse.**
 
-Airbyte provides a very nice UI for configuring and orchestrating connectors. However, it comes with a lot of parts to understand and manage: a server, a database, an orchestrator, a frontend, etc.
+When you want to deploy Airbyte open-source yourself it comes with batteries included: you'll get a server, workers, database, UI, orchestrator, connectors, secret manager, logs manager, etc. All of this is very well packaged and deployable on Kubernetes.
+
+While we believe this is great for most people we strive for lightweight and simple assets to deploy and maintain. What's more, we ❤️ `serverless` to rely on fully managed services 😁.
+
+
+Questions that may arise when deploying airbyte open-source yourself include:
+
+- How do you manage Authentication if I have a UI?
+- How do my connectors scale?
+- What do I need to monitor? How?
+- How can we backup and restore the database in case of outages?
+
+While the documentation of Airbyte is great and complete, that still represents a lot of questions.
+
 
 > **👉 We wanted a simple tool to manage Airbyte connectors, run them locally or deploy them in *serverless* mode.**
 
 
-## Features
+That's why `airbyte_serverless` is *LESS* than `airbyte`.
 
-`airbyte_serverless` offers:
+
+
+## How `airbyte_serverless` is *LESS* than `airbyte` ?
+
+### 1. `airbyte` comes with a database | `airbyte_serverless` does NOT.
+
+Airbyte database stores connectors configuration and the `state` (the track of where the latest sync ended)
+
+Instead
+- We rely on the destination to store and manage the `state`
+- Connectors configuration can be managed as configuration files that you put on git.
+
+
+### 2. `airbyte` comes with a UI | `airbyte_serverless` does NOT.
+
+In Airbyte connectors configuration is very easy to set up with a clean UI.
+
+Instead, connectors configuration is initiated with generated documented-yaml-files that you can update and version in git. *(We rely on airbyte source code of their CLI octavia to generate these yaml)*
+
+
+### 3. `airbyte` comes with workers  | `airbyte_serverless` does NOT.
+
+Airbyte open-source can be deployed on a VM or on Kubernetes. Workers are containers
+
+
+
+2. `airbyte` comes with a UI | `airbyte_serverless` does NOT. <br>
 
 > 1. ⚡ A lightweight python wrapper around any Airbyte Source executable. It comes with:
 >     - sample `config` generation in yaml to ease configuration.
@@ -170,12 +209,20 @@ To deploy to Cloud Run job, edit Dockerfile to pick the Airbyte source you like 
 We believe, [like Airbyte](https://docs.airbyte.com/understanding-airbyte/basic-normalization), that it is a good thing to decouple data moving and data transformation. To shape your data you may want to use a tool such as dbt. Thus, we follow the EL-T philosophy.
 
 
+## Credits
+
+The generation of the sample connector configuration in yaml is heavily inspired from the code of `octavia` CLI developed by airbyte.
+
+
 ## Contribute
 
 Any contribution is more than welcome 🤗!
 - Add a ⭐ on the repo to show your support
 - Raise an issue to raise a bug or suggest improvements
-- Open a PR! Below are some suggestions:
+- Open a PR! Below are some suggestions of work to be done:
+  - improve secrets management
+  - implement a CLI
+  - manage configurations as yaml files
   - implement the `get_logs` method of `BigQueryDestination`
   - add a new destination connector (Cloud Storage?)
   - add more serverless deployment examples.
