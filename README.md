@@ -1,5 +1,6 @@
 
-![logo](https://repository-images.githubusercontent.com/685582769/06c7a51b-fb1d-4b29-98da-10600e3e0fa8)
+![logo](https://github.com/unytics/airbyte_serverless/assets/111615732/c922cc30-9391-4d42-8aff-8b2b4c68bd29)
+
 
 <p align="center">
     <em>Airbyte made simple</em>
