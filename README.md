@@ -44,7 +44,7 @@
 
 ## Getting Started
 
-#### 0. Install
+#### 1. Install
 
 ```bash
 pip install airbyte-serverless
@@ -58,7 +58,7 @@ If you have docker installed on your laptop, the easiest is to write the followi
 ```python
 from airbyte_serverless.sources import AirbyteSource
 
-airbyte_source_executable = 'docker run --rm -i airbyte/source-surveymonkey:latest'
+airbyte_source_executable = 'docker run --rm -i  --volume ./:/mnt/data airbyte/source-surveymonkey:latest'
 source = AirbyteSource(airbyte_source_executable)
 ```
 

@@ -16,40 +16,41 @@ class AirbyteSource:
         self.exec = exec
         self.config = config
         self.configured_catalog = configured_catalog
+        self.temp_dir_obj = tempfile.TemporaryDirectory()  # Used to dump config as files used by airbyte connector
+        self.temp_dir = self.temp_dir_obj.name
+        self.temp_dir_for_executable = self.temp_dir  # May be different if executable is a docker image where temp dir is mounted elsewhere
 
     def _run(self, action, state=None):
-        with tempfile.TemporaryDirectory() as temp_dir:
-            command = f'{self.exec} {action}'
+        command = f'{self.exec} {action}'
 
-            needs_config = (action != 'spec')
-            if needs_config:
-                assert self.config, 'config attribute is not defined'
-                config = yaml.safe_load(self.config)
-                filename = f'{temp_dir}/config.json'
-                json.dump(config, open(filename, 'w', encoding='utf-8'))
-                command += f' --config {filename}'
+        def add_argument(name, value):
+            file = open(f'{self.temp_dir}/{name}.json', 'w', encoding='utf-8')
+            json.dump(value, file)
+            return f' --{name} {self.temp_dir_for_executable}/{name}.json'
 
-            needs_configured_catalog = (action == 'read')
-            if needs_configured_catalog:
-                filename = f'{temp_dir}/catalog.json'
-                json.dump(self.configured_catalog, open(filename, 'w', encoding='utf-8'))
-                command += f' --catalog {filename}'
+        needs_config = (action != 'spec')
+        if needs_config:
+            assert self.config, 'config attribute is not defined'
+            config = yaml.safe_load(self.config)
+            command += add_argument('config', config)
 
-            if state:
-                filename = f'{temp_dir}/state.json'
-                json.dump(state, open(filename, 'w', encoding='utf-8'))
-                command += f' --state {filename}'
+        needs_configured_catalog = (action == 'read')
+        if needs_configured_catalog:
+            command += add_argument('catalog', self.configured_catalog)
 
-            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
-            for line in iter(process.stdout.readline, b""):
-                content = line.decode().strip()
-                try:
-                    message = json.loads(content)
-                except:
-                    continue
-                if message.get('trace', {}).get('error'):
-                    raise AirbyteSourceException(json.dumps(message['trace']['error']))
-                yield message
+        if state:
+            command += add_argument('state', self.state)
+
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
+        for line in iter(process.stdout.readline, b""):
+            content = line.decode().strip()
+            try:
+                message = json.loads(content)
+            except:
+                continue
+            if message.get('trace', {}).get('error'):
+                raise AirbyteSourceException(json.dumps(message['trace']['error']))
+            yield message
 
     def _run_and_return_first_message(self, action):
         messages = self._run(action)
@@ -126,3 +127,11 @@ class AirbyteSource:
 
     def extract(self, state=None):
         return self._run('read', state=state)
+
+
+class DockerAirbyteSource(AirbyteSource):
+
+    def __init__(self, docker_image, *args, **kwargs):
+        super().__init__('', *args, **kwargs)
+        self.temp_dir_for_executable = '/mnt/temp'
+        self.exec = f'docker run --rm -i --volume {self.temp_dir}:{self.temp_dir_for_executable} {docker_image}'
