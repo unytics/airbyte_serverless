@@ -1,7 +1,7 @@
 import setuptools
 
 
-VERSION = '0.2'
+VERSION = '0.3'
 
 
 with open('README.md', 'r', encoding='utf-8') as fh:
@@ -11,10 +11,10 @@ with open('README.md', 'r', encoding='utf-8') as fh:
 setuptools.setup(
     name='airbyte_serverless',
     packages=['airbyte_serverless'],
-    version='0.2',
+    version=VERSION,
     author='Unytics',
     author_email='paul.marcombes@unytics.io',
-    description='Airbyte made easy',
+    description='Airbyte made easy (no UI, no database, no cluster)',
     long_description=long_description,
     long_description_content_type='text/markdown',
     download_url=f'https://github.com/unytics/airbyte_serverless/archive/refs/tags/v{VERSION}.tar.gz',
