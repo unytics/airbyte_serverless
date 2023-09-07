@@ -59,7 +59,7 @@ abs create my_first_connection --source="airbyte/source-faker:0.1.4" --destinati
 > 4. `destination` param must be one of the following:
 >     - `print`
 >     - `bigquery:my_project.my_dataset` with `my_project` a GCP project where you can run BigQuery queries and `my_dataset` a BigQuery dataset where you have `dataEditor` permission.
->     - contributions are welcome to offer more destinations
+>     - *contributions are welcome to offer more destinations* 🤗
 > 6. The command will create a configuration file `./connections/my_first_connection.yaml` with initialized configuration.
 > 8. Update this configuration file to suit your needs.
 
