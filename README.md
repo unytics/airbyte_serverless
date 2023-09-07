@@ -78,13 +78,20 @@ abs run my_first_connection
 
 ### Select only some streams 🧛🏼
 
-You may not want to copy all the data that the source can get. To see all the available `streams` run:
+You may not want to copy all the data that the source can get. To see all available `streams` run:
 
 ``` sh
 abs list-streams my_first_connection
 ```
 
+Run extract-load for only `stream1` and `stream2` with:
+
+``` sh
+abs run my_first_connection --streams="stream1,stream2"
+```
+
 If you want to 
+
 
 
 Congratulation 
