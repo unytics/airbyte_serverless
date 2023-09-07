@@ -73,6 +73,8 @@ abs run my_first_connection
 > 1. The `run`commmand will only work if you have correctly edited `./connections/my_first_connection.yaml` configuration file.
 > 2. If you chose `bigquery` destination, you must have `gcloud` installed on your machine with default credentials initialized with the command `gcloud auth application-default login`
 > 3. 👏 Congratulations: you just run your first Extract-Load!
+> 4. Data is always appended at destination (not replaced nor upserted)
+> 5. If the connector supports incremental extract (extract only new or recently modified data) then this mode is chosen.
 
 
 
@@ -90,11 +92,12 @@ Run extract-load for only `stream1` and `stream2` with:
 abs run my_first_connection --streams="stream1,stream2"
 ```
 
-If you want to 
+If you want to persist the choice of these streams for all future extract-loads, run:
 
+``` sh
+abs set-config my_first_connection --streams="stream1,stream2"
+```
 
-
-Congratulation 
 
 ### Use `abs` 🔥
 
