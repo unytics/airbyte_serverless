@@ -50,9 +50,11 @@
 pip install airbyte-serverless
 ```
 
-#### 1. Create an Airbyte Source from a public docker image
+#### 2. Create an Airbyte Source from a public docker image
 
-If you have docker installed on your laptop, the easiest is to write the following code in a file `getting_started.py` (change `surveymonkey` with the source you want). Then, it should directly work when you run `python getting_started.py`. *If it does not, please raise an issue.*
+> ⚠️ For this to work you need to have docker in your machine
+
+Write the following code in a file `getting_started.py` (change `surveymonkey` with the source you want). Then, you can run it with `python getting_started.py`. *If it does not work, please raise an issue.* You can list public airbyte source docker images [here](https://hub.docker.com/search?q=airbyte%2Fsource-)
 
 
 ```python
@@ -81,7 +83,7 @@ source = AirbyteSource(docker_image)
 </details>
 
 
-#### 2. Update `config` for your Airbyte Source
+#### 3. Update `config` for your Airbyte Source
 
 Your Airbyte Source needs some config to be able to connect. Show a pre-filled `config` for your connector with:
 
@@ -98,14 +100,14 @@ YOUR UPDATED CONFIG
 ```
 
 
-#### 3. Check your `config`
+#### 4. Check your `config`
 
 ```python
 print(source.connection_status)
 ```
 
 
-#### 4. Update `configured_catalog` for your Airbyte Source
+#### 5. Update `configured_catalog` for your Airbyte Source
 
 The source `catalog` lists the available `streams` (think entities) that the source is able to retrieve. The `configured_catalog` specifies which `streams` to extract and how. Show the default `configured_catalog` with:
 
@@ -122,13 +124,13 @@ source.configured_catalog = {
 ```
 
 
-#### 5. Test the retrieval of one data record
+#### 6. Test the retrieval of one data record
 
 ```python
 print(source.first_record)
 ```
 
-#### 6. Create a destination and run Extract-Load
+#### 7. Create a destination and run Extract-Load
 
 ```python
 from airbyte_serverless.destinations import BigQueryDestination
@@ -139,7 +141,7 @@ destination.load(data)
 ```
 
 
-#### 7. Run Extract-Load from where you stopped
+#### 8. Run Extract-Load from where you stopped
 
 The `state` keeps track from where the latest extract-load ended (for incremental extract-load).
 To start from this `state` run:
@@ -155,13 +157,13 @@ destination.load(data)
 
 ```python
 
-from airbyte_serverless.sources import AirbyteSource
+from airbyte_serverless.sources import DockerAirbyteSource
 from airbyte_serverless.destinations import BigQueryDestination
 
-airbyte_source_executable = 'docker run --rm -i airbyte/source-surveymonkey:latest'
+docker_image = 'airbyte/source-surveymonkey:latest'
 config = 'YOUR CONFIG'
 configured_catalog = {YOUR CONFIGURED CATALOG}
-source = AirbyteSource(airbyte_source_executable, config=config, configured_catalog=configured_catalog)
+source = DockerAirbyteSource(docker_image, config=config, configured_catalog=configured_catalog)
 
 destination = BigQueryDestination(dataset='YOUR-PROJECT.YOUR_DATASET')
 
