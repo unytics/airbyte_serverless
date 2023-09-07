@@ -20,7 +20,7 @@
 
 ## `Airbyte Open-Source Platform` vs `airbyte_serverless`
 
-*Airbyte Serverless is* less *than Airbyte Open-Source Platform*
+> Airbyte Serverless is *less* than Airbyte Open-Source Platform
 
 | Airbyte Open-Source Platform    | Airbyte Serverless |
 | -------- | ------- |
