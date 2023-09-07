@@ -63,7 +63,9 @@ Commands:
   test    Test BIGFUNCTION
 ```
 
-### Run you first Extract-Load 👨‍💻
+### Configure your first AirbyteSource 👨‍💻
+
+> Make sure you have docker installed.
 
 
 
