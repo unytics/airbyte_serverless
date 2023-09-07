@@ -37,7 +37,37 @@ AirbyteServerless aims at offering **a lightweight alternative** to Airbyte Open
 | **Is scalable with conditions**<br>Scalable if deployed on autoscaled Kubernetes Cluster and if you are skilled enough.<br>👉 **Check that you are skilled enough with Kubernetes by watching [this video](https://www.youtube.com/watch?v=9wvEwPLcLcA)** 😁. | **Is scalable**<br>Each connector is deployed independently of each other. You can have as many as you want. |
 
 
-## 💥 `abs`: the AirbyteServerless CLI
+## 💥 `abs` CLI
+
+`abs` is the CLI (command-line-interface) of AirbyteServerless which facilitates connectors management.
+
+### Install `abs` 🛠️
+
+``` sh
+pip install airbyte-serverless
+```
+
+### Use `abs` 🔥
+
+``` sh
+$ abs --help
+Usage: bigfun [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  deploy  Deploy BIGFUNCTION
+  doc     Generate, serve and publish documentation
+  test    Test BIGFUNCTION
+```
+
+
+
+### Deploy you first function 👨‍💻
+
+
+
 
 ## Getting Started
 
