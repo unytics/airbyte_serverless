@@ -43,9 +43,10 @@ class AirbyteSource:
             process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
             for line in iter(process.stdout.readline, b""):
                 content = line.decode().strip()
-                if not content:
+                try:
+                    message = json.loads(content)
+                except:
                     continue
-                message = json.loads(content)
                 if message.get('trace', {}).get('error'):
                     raise AirbyteSourceException(json.dumps(message['trace']['error']))
                 yield message
