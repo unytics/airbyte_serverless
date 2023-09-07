@@ -137,5 +137,5 @@ Any contribution is more than welcome 🤗!
 
 ## Credits
 
-- Big kudos to Airbyte for all the hard work!
+- Big kudos to Airbyte for all the hard work on connectors!
 - The generation of the sample connector configuration in yaml is heavily inspired from the code of `octavia` CLI developed by airbyte.
