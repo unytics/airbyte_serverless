@@ -113,12 +113,13 @@ Commands:
 ```
 
 
-## Deploy 🚀
+### Deploy 🚀
 
 ...
 
+<br>
 
-## Contribute 👋
+## 👋 Contribute 
 
 Any contribution is more than welcome 🤗!
 - Add a ⭐ on the repo to show your support
@@ -132,6 +133,9 @@ Any contribution is more than welcome 🤗!
   - add more serverless deployment examples.
   - implement optional post-processing (replace, upsert data at destination instead of append?)
 
+<br>
+
 ## Credits
 
-The generation of the sample connector configuration in yaml is heavily inspired from the code of `octavia` CLI developed by airbyte.
+- Big kudos to Airbyte for all the hard work!
+- The generation of the sample connector configuration in yaml is heavily inspired from the code of `octavia` CLI developed by airbyte.
