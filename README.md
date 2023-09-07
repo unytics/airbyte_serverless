@@ -65,18 +65,16 @@ Commands:
 
 ### Create your first Connection 👨‍💻
 
-The following command will create a first `connection` from faker Airbyte source and BigQuery.
-
 ``` sh
 abs create my_first_connection --source="airbyte/source-faker:0.1.4" --destination="bigquery:my_project.my_dataset"
 ```
 
-1. Docker is required. Make sure you have it installed.
-2. `source` param can be any Public Docker Airbyte Source ([here](https://hub.docker.com/search?q=airbyte%2Fsource-) is the list).
-3. `destination` param must start with `bigquery:` as only BigQuery is supported for now (contributions are welcome).
-4. Choose a `project` where you can run BigQuery queries and a `dataset` where you have `dataEditor` permission.
-5. The command will create a configuration file `./connections/my_first_connection_yaml` with initialized configuration.
-6. Update this configuration file to suit your needs.
+> 1. Docker is required. Make sure you have it installed.
+> 2. `source` param can be any Public Docker Airbyte Source ([here](https://hub.docker.com/search?q=airbyte%2Fsource-) is the list). We recomend that you use faker source to get started.
+> 4. `destination` param must start with `bigquery:` as only BigQuery is supported for now (contributions are welcome).
+> 5. Choose a `project` where you can run BigQuery queries and a `dataset` where you have `dataEditor` permission.
+> 6. The command will create a configuration file `./connections/my_first_connection_yaml` with initialized configuration.
+> 7. Update this configuration file to suit your needs.
 
 
 
