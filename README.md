@@ -12,7 +12,7 @@
 
 ## 🔍️ What is AirbyteServerless?
 
-Airbyte Serverless is a simple tool to **manage Airbyte connectors**, run them **locally** or deploy them in **serverless** mode.
+Airbyte Serverless is a simple CLI to **manage Airbyte connectors**, run them **locally** or deploy them in **serverless** mode.
 
 <br>
 
@@ -35,15 +35,6 @@ AirbyteServerless aims at offering **a lightweight alternative** to Airbyte Open
 | **Has a transform layer**<br>Airbyte loads your data in a raw format but then enables you to perform basic transform such as replace, upsert, [schema normalization](https://docs.airbyte.com/understanding-airbyte/basic-normalization/)   | **Has NO transform layer**<br>- Data is appended in your destination in raw format.<br>- `airbyte_serverless` is dedicated to do one thing and do it well: `Extract-Load`. |
 | **NOT Serverless**<br>- Can be deployed on a VM or Kubernetes Cluster.<br>- The platform is made of tens of dependent containers that you CANNOT deploy with serverless  | **Serverless**<br>- An Airbyte source docker image is upgraded with a destination connector<br>- The upgraded docker image can then be deployed as an isolated `Cloud Run Job` (or `Cloud Run Service`)<br>- Cloud Run is natively monitored with metrics, dashboards, logs, error reporting, alerting, etc<br>- It can be scheduled or triggered by events  |
 | **Is scalable with conditions**<br>Scalable if deployed on autoscaled Kubernetes Cluster and if you are skilled enough.<br>👉 **Check that you are skilled enough with Kubernetes by watching [this video](https://www.youtube.com/watch?v=9wvEwPLcLcA)** 😁. | **Is scalable**<br>Each connector is deployed independently of each other. You can have as many as you want. |
-
-
-
-
-## Features
-
-> 1. A lightweight python wrapper around any Airbyte Source executable.
-> 2. Destination Connectors (only BigQuery for now - *contibutions are welcome* 🤗).
-> 3. Examples to deploy to **serverless** compute (only Google Cloud Run for now - *contibutions are welcome* 🤗)
 
 
 
