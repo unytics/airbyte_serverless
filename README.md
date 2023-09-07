@@ -48,6 +48,29 @@ AirbyteServerless aims at offering **a lightweight alternative** to Airbyte-Open
 pip install airbyte-serverless
 ```
 
+### Create your first Connection 👨‍💻
+
+``` sh
+abs create my_first_connection --source="airbyte/source-faker:0.1.4" --destination="bigquery:my_project.my_dataset"
+```
+
+> 1. Docker is required. Make sure you have it installed.
+> 2. `source` param can be any Public Docker Airbyte Source ([here](https://hub.docker.com/search?q=airbyte%2Fsource-) is the list). We recomend that you use faker source to get started.
+> 4. `destination` param must start with `bigquery:` as only BigQuery is supported for now (contributions are welcome).
+> 5. Choose a `project` where you can run BigQuery queries and a `dataset` where you have `dataEditor` permission.
+> 6. The command will create a configuration file `./connections/my_first_connection_yaml` with initialized configuration.
+> 7. Update this configuration file to suit your needs.
+
+### Run it! ⚡
+
+*Once you have correctly edited the yaml configuration file* you can run the extract-load with:
+
+``` sh
+abs run my_first_connection
+```
+
+Congratulation 
+
 ### Use `abs` 🔥
 
 ``` sh
@@ -62,20 +85,6 @@ Commands:
   doc     Generate, serve and publish documentation
   test    Test BIGFUNCTION
 ```
-
-### Create your first Connection 👨‍💻
-
-``` sh
-abs create my_first_connection --source="airbyte/source-faker:0.1.4" --destination="bigquery:my_project.my_dataset"
-```
-
-> 1. Docker is required. Make sure you have it installed.
-> 2. `source` param can be any Public Docker Airbyte Source ([here](https://hub.docker.com/search?q=airbyte%2Fsource-) is the list). We recomend that you use faker source to get started.
-> 4. `destination` param must start with `bigquery:` as only BigQuery is supported for now (contributions are welcome).
-> 5. Choose a `project` where you can run BigQuery queries and a `dataset` where you have `dataEditor` permission.
-> 6. The command will create a configuration file `./connections/my_first_connection_yaml` with initialized configuration.
-> 7. Update this configuration file to suit your needs.
-
 
 
 
