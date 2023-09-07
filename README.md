@@ -50,7 +50,7 @@ pip install airbyte-serverless
 
 > ⚠️ For this to work you need to have docker in your machine
 
-Write the following code in a file `getting_started.py` (change `surveymonkey` with the source you want). Then, you can run it with `python getting_started.py`. *If it does not work, please raise an issue.* You can list public airbyte source docker images [here](https://hub.docker.com/search?q=airbyte%2Fsource-)
+Run the following code (change `surveymonkey` with the source you want -- *You can get a list of public airbyte source docker images [here](https://hub.docker.com/search?q=airbyte%2Fsource-)*)
 
 
 ```python
