@@ -19,10 +19,6 @@
 
 <br>
 
-## `Airbyte Open-Source Platform` vs `airbyte_serverless`
-
-> 💡 Airbyte Serverless is *less* than Airbyte Open-Source Platform
-
 | Airbyte Open-Source Platform    | Airbyte Serverless |
 | -------- | ------- |
 | **Deployed on a VM or Kubernetes Cluster**  | **Deployed with Serverless**<br>- Each Airbyte source docker image is upgraded with a destination connector from `airbyte_serverless`<br>- Each upgraded docker image can then be deployed as an isolated `Cloud Run Job` (or `Cloud Run Service`)<br>- Cloud Run is natively monitored with metrics, dashboards, logs, error reporting, alerting, etc<br>- They can be scheduled or triggred upon cloud events  |

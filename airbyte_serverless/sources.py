@@ -47,6 +47,7 @@ class AirbyteSource:
             try:
                 message = json.loads(content)
             except:
+                print('NOT JSON:', content)
                 continue
             if message.get('trace', {}).get('error'):
                 raise AirbyteSourceException(json.dumps(message['trace']['error']))
