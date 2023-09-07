@@ -15,7 +15,7 @@
 > **Airbyte Open-Source Platform is "batteries included"** 🔋.<br>You'll get a server, workers, database, UI, orchestrator, connectors, secret manager, logs manager, etc. All of this is very well packaged and deployable on Kubernetes.
 > While we believe this is great for most people we strive for lightweight and simple assets to deploy and maintain. What's more, we ❤️ `serverless`.
 >
-> **👉 We wanted a simple tool to manage Airbyte connectors, run them locally or deploy them in *serverless* mode.**
+> **👉 We wanted a simple tool to manage Airbyte connectors, run them locally or deploy them in *serverless* mode. 👈**
 
 <br>
 
