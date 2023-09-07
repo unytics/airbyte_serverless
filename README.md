@@ -38,7 +38,7 @@ AirbyteServerless aims at offering **a lightweight alternative** to Airbyte-Open
 
 <br> 
 
-## 💥 `abs` CLI
+## 💥 Getting Started with `abs` CLI
 
 `abs` is the CLI (command-line-interface) of AirbyteServerless which facilitates connectors management.
 
@@ -72,10 +72,8 @@ abs run my_first_connection
 
 > 1. The `run`commmand will only work if you have correctly edited `./connections/my_first_connection.yaml` configuration file.
 > 2. If you chose `bigquery` destination, you must have `gcloud` installed on your machine with default credentials initialized with the command `gcloud auth application-default login`
-> 3. 👏 Congratulations: you just run your first Extract-Load!
-> 4. Data is always appended at destination (not replaced nor upserted)
+> 4. Data is always appended at destination (not replaced nor upserted). It will be in raw format.
 > 5. If the connector supports incremental extract (extract only new or recently modified data) then this mode is chosen.
-
 
 
 ### Select only some streams 🧛🏼
@@ -99,7 +97,7 @@ abs set-config my_first_connection --streams="stream1,stream2"
 ```
 
 
-### Use `abs` 🔥
+### Get help 📙
 
 ``` sh
 $ abs --help
@@ -115,161 +113,12 @@ Commands:
 ```
 
 
+## Deploy 🚀
 
-## Getting Started
-
-#### 1. Install
-
-```bash
-pip install airbyte-serverless
-```
-
-#### 2. Create an Airbyte Source from a public docker image
-
-Run the following code (change `surveymonkey` with the source you want)
-
-> - 💡 You can get a list of public airbyte source docker images [here](https://hub.docker.com/search?q=airbyte%2Fsource-)
-> - ⚠️ For this to work you need to have docker in your machine
+...
 
 
-```python
-from airbyte_serverless.sources import DockerAirbyteSource
-
-docker_image = 'airbyte/source-surveymonkey:latest'
-source = AirbyteSource(docker_image)
-```
-
-<details>
-  <summary><u>If you don't have docker <i>(or don't want to use it)</i></u></summary>
-
->  It is also possible to clone airbyte repo and install a python source connector:
->
->  1. Clone the repo
->  2. Go to the directory of the connector: `cd airbyte-integrations/connectors/source-surveymonkey`
->  3. Install the python connector `pip install -r requirements.txt`
->  4. Create here a file `getting_started.py` but with the following content:
->
->  ```python
-> from airbyte_serverless.sources import AirbyteSource
->
-> airbyte_source_executable = 'python main.py'
-> source = AirbyteSource(airbyte_source_executable)
->  ```
-</details>
-
-
-#### 3. Update `config` for your Airbyte Source
-
-Your Airbyte Source needs some config to be able to connect. Show a pre-filled `config` for your connector with:
-
-```python
-print(source.config)
-```
-
-Copy the content, edit it and update the variable:
-
-```python
-source.config = '''
-YOUR UPDATED CONFIG
-'''
-```
-
-
-#### 4. Check your `config`
-
-```python
-print(source.connection_status)
-```
-
-
-#### 5. Update `configured_catalog` for your Airbyte Source
-
-The source `catalog` lists the available `streams` (think entities) that the source is able to retrieve. The `configured_catalog` specifies which `streams` to extract and how. Show the default `configured_catalog` with:
-
-```python
-print(source.configured_catalog)
-```
-
-If needed, copy the content, edit it and update the variable:
-
-```python
-source.configured_catalog = {
-   ...YOUR UPDATED CONFIG
-}
-```
-
-
-#### 6. Test the retrieval of one data record
-
-```python
-print(source.first_record)
-```
-
-#### 7. Create a destination and run Extract-Load
-
-```python
-from airbyte_serverless.destinations import BigQueryDestination
-
-destination = BigQueryDestination(dataset='YOUR-PROJECT.YOUR_DATASET')
-data = source.extract()
-destination.load(data)
-```
-
-
-#### 8. Run Extract-Load from where you stopped
-
-The `state` keeps track from where the latest extract-load ended (for incremental extract-load).
-To start from this `state` run:
-
-```python
-state = destination.get_state()
-data = source.extract(state=state)
-destination.load(data)
-```
-
-
-## End to End Example
-
-```python
-
-from airbyte_serverless.sources import DockerAirbyteSource
-from airbyte_serverless.destinations import BigQueryDestination
-
-docker_image = 'airbyte/source-surveymonkey:latest'
-config = 'YOUR CONFIG'
-configured_catalog = {YOUR CONFIGURED CATALOG}
-source = DockerAirbyteSource(docker_image, config=config, configured_catalog=configured_catalog)
-
-destination = BigQueryDestination(dataset='YOUR-PROJECT.YOUR_DATASET')
-
-state = destination.get_state()
-data = source.extract(state=state)
-destination.load(data)
-```
-
-
-
-
-## Deploy
-
-To deploy to Cloud Run job, edit Dockerfile to pick the Airbyte source you like then run:
-
-
-
-## Limitations
-
-- BigQuery Destination connector only works in append mode
-- Data at destination is in raw format. No data parsing is done.
-
-We believe, [like Airbyte](https://docs.airbyte.com/understanding-airbyte/basic-normalization), that it is a good thing to decouple data moving and data transformation. To shape your data you may want to use a tool such as dbt. Thus, we follow the EL-T philosophy.
-
-
-## Credits
-
-The generation of the sample connector configuration in yaml is heavily inspired from the code of `octavia` CLI developed by airbyte.
-
-
-## Contribute
+## Contribute 👋
 
 Any contribution is more than welcome 🤗!
 - Add a ⭐ on the repo to show your support
@@ -282,3 +131,7 @@ Any contribution is more than welcome 🤗!
   - add a new destination connector (Cloud Storage?)
   - add more serverless deployment examples.
   - implement optional post-processing (replace, upsert data at destination instead of append?)
+
+## Credits
+
+The generation of the sample connector configuration in yaml is heavily inspired from the code of `octavia` CLI developed by airbyte.
