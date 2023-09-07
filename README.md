@@ -56,24 +56,25 @@ abs create my_first_connection --source="airbyte/source-faker:0.1.4" --destinati
 
 > 1. Docker is required. Make sure you have it installed.
 > 2. `source` param can be any Public Docker Airbyte Source ([here](https://hub.docker.com/search?q=airbyte%2Fsource-) is the list). We recomend that you use faker source to get started.
-> 4. `destination` param must start with one of the following:
->     - `bigquery:`
+> 4. `destination` param must be like one of the following:
+>     - `print`
+>     - `bigquery:my_project.my_dataset` with `my_project` a GCP project where you can run BigQuery queries and `my_dataset` a BigQuery dataset where you have `dataEditor` permission.
 >     - contributions are welcome to offer more destinations
-> 6. Choose a `project` where you can run BigQuery queries and a `dataset` where you have `dataEditor` permission.
-> 7. The command will create a configuration file `./connections/my_first_connection.yaml` with initialized configuration.
+> 6. The command will create a configuration file `./connections/my_first_connection.yaml` with initialized configuration.
 > 8. Update this configuration file to suit your needs.
 
-### Run it! ⚡
 
+### Run it! ⚡
 
 ``` sh
 abs run my_first_connection
 ```
 
-> 1. The `run`commmand will work only if you have correctly edited `./connections/my_first_connection.yaml` configuration file.
-> 2.  *Once you have correctly edited the yaml configuration file* you can run the extract-load with:
+> 1. The `run`commmand will only work if you have correctly edited `./connections/my_first_connection.yaml` configuration file.
+> 2. If you chose `bigquery` destination, you must have `gcloud` installed on your machine with default credentials initialized with the command `gcloud auth application-default login`
+> 3. 👏 Congratulations: you just run your first Extract-Load!
 
-👏 Congratulations: you just run your first Extract-Load!
+
 
 ### Select only some streams 🧛🏼
 
