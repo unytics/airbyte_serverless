@@ -22,7 +22,7 @@ Airbyte Serverless is a simple CLI to **manage Airbyte connectors**, run them **
 
 To manage these connectors, Airbyte offers **Airbyte Open-Source Platform**. It includes a server, workers, database, UI, orchestrator, connectors, secret manager, logs manager, etc. 
 
-AirbyteServerless aims at offering **a lightweight alternative** to Airbyte Open-Source Platform to **simplify connectors management**.
+AirbyteServerless aims at offering **a lightweight alternative** to Airbyte Open-Source Platform to simplify connectors management.
 
 <br>
 
