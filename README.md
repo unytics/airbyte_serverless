@@ -12,7 +12,7 @@
 
 ## 🔍️ What is AirbyteServerless?
 
-AirbyteServerless is a simple CLI to **manage Airbyte connectors**, run them **locally** or deploy them in **serverless** mode.
+AirbyteServerless is a simple tool to **manage Airbyte connectors**, run them **locally** or deploy them in **serverless** mode.
 
 <br>
 
