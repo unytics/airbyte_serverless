@@ -12,7 +12,7 @@
 
 ## 🔍️ What is AirbyteServerless?
 
-Airbyte Serverless is a simple CLI to **manage Airbyte connectors**, run them **locally** or deploy them in **serverless** mode.
+AirbyteServerless is a simple CLI to **manage Airbyte connectors**, run them **locally** or deploy them in **serverless** mode.
 
 <br>
 
@@ -28,7 +28,7 @@ AirbyteServerless aims at offering **a lightweight alternative** to Airbyte Open
 
 ## 📝 Comparing Airbyte Open-Source Platform & AirbyteServerless
 
-| Airbyte Open-Source Platform    | Airbyte Serverless |
+| Airbyte Open-Source Platform    | AirbyteServerless |
 | -------- | ------- |
 | **Has a UI** | **Has NO UI**<br>Connections configurations are managed by documented yaml files |
 | **Has a database**  | **Has NO database**<br>- Configurations files are versioned in git<br>- The destination stores the `state` (the [checkpoint](https://airbyte.com/blog/checkpointing) of where sync stops) and `logs` which can then be visualized with your preferred BI tool |
