@@ -36,6 +36,7 @@ AirbyteServerless aims at offering **a lightweight alternative** to Airbyte Open
 | **NOT Serverless**<br>- Can be deployed on a VM or Kubernetes Cluster.<br>- The platform is made of tens of dependent containers that you CANNOT deploy with serverless  | **Serverless**<br>- An Airbyte source docker image is upgraded with a destination connector<br>- The upgraded docker image can then be deployed as an isolated `Cloud Run Job` (or `Cloud Run Service`)<br>- Cloud Run is natively monitored with metrics, dashboards, logs, error reporting, alerting, etc<br>- It can be scheduled or triggered by events  |
 | **Is scalable with conditions**<br>Scalable if deployed on autoscaled Kubernetes Cluster and if you are skilled enough.<br>👉 **Check that you are skilled enough with Kubernetes by watching [this video](https://www.youtube.com/watch?v=9wvEwPLcLcA)** 😁. | **Is scalable**<br>Each connector is deployed independently of each other. You can have as many as you want. |
 
+<br> 
 
 ## 💥 `abs` CLI
 
@@ -51,7 +52,7 @@ pip install airbyte-serverless
 
 ``` sh
 $ abs --help
-Usage: bigfun [OPTIONS] COMMAND [ARGS]...
+Usage: abs [OPTIONS] COMMAND [ARGS]...
 
 Options:
   --help  Show this message and exit.
@@ -62,9 +63,7 @@ Commands:
   test    Test BIGFUNCTION
 ```
 
-
-
-### Deploy you first function 👨‍💻
+### Run you first Extract-Load 👨‍💻
 
 
 
