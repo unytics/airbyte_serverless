@@ -29,7 +29,7 @@
 | **Has a database**  | **Has NO database**<br>- The destination stores the `state` (the track of where sync stops)<br>- The destination stores the `logs` which can then be visualized with your preferred BI tool <br>- Connectors Configurations can be stored in config files and versionned in git |
 | **Has a UI** | **Has NO UI**<br>Configurations are generated as documented-yaml-files that one can edit and version |
 | **Has a transform layer**<br>Airbyte loads your data in a raw format but then enables you to perform basic transform such as replace, upsert, [schema normalization](https://docs.airbyte.com/understanding-airbyte/basic-normalization/)   | **Has NO transform layer**<br>Data is appended in your destination in raw format. We believe less is more. `airbyte_serverless` is dedicated to do one thing and do it well: `Extract-Load`. It's easier to maintain and to evolve. |
-| **Is scalable**<br>if deployed on autoscaled Kubernetes Cluster.<br>👉 **Check that you are skilled enough with Kubernetes by watching [this video](https://www.youtube.com/watch?v=9wvEwPLcLcA)** 😁. | **Is scalable**<br>Each connector is deployed independently of each other. You can have as many as you want. |
+| **Is scalable with conditions**<br>Scalable if deployed on autoscaled Kubernetes Cluster and if you are skilled enough.<br>👉 **Check that you are skilled enough with Kubernetes by watching [this video](https://www.youtube.com/watch?v=9wvEwPLcLcA)** 😁. | **Is scalable**<br>Each connector is deployed independently of each other. You can have as many as you want. |
 
 
 
