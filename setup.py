@@ -1,7 +1,7 @@
 import setuptools
 
 
-VERSION = '0.11'
+VERSION = '0.13'
 
 
 with open('README.md', 'r', encoding='utf-8') as fh:
@@ -24,5 +24,15 @@ setuptools.setup(
         'Operating System :: OS Independent',
     ],
     python_requires='>=3.6',
-    install_requires=['google-cloud-bigquery', 'pyyaml']
+    install_requires=[
+        'google-cloud-bigquery',
+        'pyyaml',
+        'click',
+        'click-help-colors',
+    ],
+    entry_points={
+        'console_scripts': [
+            'abs = airbyte_serverless.cli:cli',
+        ],
+    },
 )
