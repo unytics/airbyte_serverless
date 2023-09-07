@@ -18,7 +18,7 @@ Airbyte Serverless is a simple tool to **manage Airbyte connectors**, run them *
 
 ## 💡  Why AirbyteServerless?
 
-[Airbyte](https://airbyte.com/) with its **catalog of open-source connectors to move your data from any source to your data-warehouse** is a must-have in your data-stack.
+[Airbyte](https://airbyte.com/) is a must-have in your data-stack with its **catalog of open-source connectors to move your data from any source to your data-warehouse**.
 
 To manage these connectors, Airbyte offers **Airbyte Open-Source Platform** which is is "batteries included"** 🔋. It comes with a server, workers, database, UI, orchestrator, connectors, secret manager, logs manager, etc. All of this is very well packaged and deployable on Kubernetes. While we believe this is great for most people we strive for lightweight and simple assets to deploy and maintain.
 
