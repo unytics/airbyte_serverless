@@ -33,7 +33,7 @@
 ## Features
 
 > 1. ⚡ A lightweight python wrapper around any Airbyte Source executable.
-> 2. ⚡ Destination Connectors (only BigQuery for now - *contibutions are welcome* 🤗) which store `logs` and `states` in addition to data. Thus, there is **no need for a database any more!**
+> 2. ⚡ Destination Connectors (only BigQuery for now - *contibutions are welcome* 🤗).
 > 3. ⚡ Examples to deploy to **serverless** compute (only Google Cloud Run for now - *contibutions are welcome* 🤗)
 
 
