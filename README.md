@@ -20,7 +20,7 @@ AirbyteServerless is a simple tool to **manage Airbyte connectors**, run them **
 
 [Airbyte](https://airbyte.com/) is a must-have in your data-stack with its **catalog of open-source connectors to move your data from any source to your data-warehouse**.
 
-To manage these connectors, Airbyte offers **Airbyte-Open-Source-Platform**. It includes a server, workers, database, UI, orchestrator, connectors, secret manager, logs manager, etc. 
+To manage these connectors, Airbyte offers **Airbyte-Open-Source-Platform** which includes a server, workers, database, UI, orchestrator, connectors, secret manager, logs manager, etc. 
 
 AirbyteServerless aims at offering **a lightweight alternative** to Airbyte-Open-Source-Platform to simplify connectors management.
 
@@ -28,7 +28,7 @@ AirbyteServerless aims at offering **a lightweight alternative** to Airbyte-Open
 
 ## 📝 Comparing Airbyte-Open-Source-Platform & AirbyteServerless
 
-| Airbyte Open-Source Platform    | AirbyteServerless |
+| Airbyte-Open-Source-Platform    | AirbyteServerless |
 | -------- | ------- |
 | **Has a UI** | **Has NO UI**<br>Connections configurations are managed by documented yaml files |
 | **Has a database**  | **Has NO database**<br>- Configurations files are versioned in git<br>- The destination stores the `state` (the [checkpoint](https://airbyte.com/blog/checkpointing) of where sync stops) and `logs` which can then be visualized with your preferred BI tool |
