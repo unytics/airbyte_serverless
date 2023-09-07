@@ -26,7 +26,7 @@ AirbyteServerless aims at offering **a lightweight alternative** to Airbyte Open
 
 <br>
 
-## 📝 Comparing Airbyte Open-Source Platform with AirbyteServerless
+## 📝 Comparing Airbyte Open-Source Platform & AirbyteServerless
 
 | Airbyte Open-Source Platform    | Airbyte Serverless |
 | -------- | ------- |
