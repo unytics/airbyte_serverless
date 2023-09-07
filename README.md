@@ -50,16 +50,16 @@
 pip install airbyte-serverless
 ```
 
-#### 1. Create an Airbyte Source from an Airbyte Source Executable
+#### 1. Create an Airbyte Source from a public docker image
 
 If you have docker installed on your laptop, the easiest is to write the following code in a file `getting_started.py` (change `surveymonkey` with the source you want). Then, it should directly work when you run `python getting_started.py`. *If it does not, please raise an issue.*
 
 
 ```python
-from airbyte_serverless.sources import AirbyteSource
+from airbyte_serverless.sources import DockerAirbyteSource
 
-airbyte_source_executable = 'docker run --rm -i  --volume ./:/mnt/data airbyte/source-surveymonkey:latest'
-source = AirbyteSource(airbyte_source_executable)
+docker_image = 'airbyte/source-surveymonkey:latest'
+source = AirbyteSource(docker_image)
 ```
 
 <details>
@@ -70,8 +70,14 @@ source = AirbyteSource(airbyte_source_executable)
 >  1. Clone the repo
 >  2. Go to the directory of the connector: `cd airbyte-integrations/connectors/source-surveymonkey`
 >  3. Install the python connector `pip install -r requirements.txt`
->  4. Create here the file `getting_started.py` and set `airbyte_source_executable = 'python main.py'`
->  5. You can now run `python getting_started.py` it then should also work. *If it does not, please raise an issue.*
+>  4. Create here a file `getting_started.py` but with the following content:
+>
+>  ```python
+> from airbyte_serverless.sources import AirbyteSource
+>
+> airbyte_source_executable = 'python main.py'
+> source = AirbyteSource(airbyte_source_executable)
+>  ```
 </details>
 
 
