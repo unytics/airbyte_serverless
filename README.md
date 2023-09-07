@@ -56,18 +56,35 @@ abs create my_first_connection --source="airbyte/source-faker:0.1.4" --destinati
 
 > 1. Docker is required. Make sure you have it installed.
 > 2. `source` param can be any Public Docker Airbyte Source ([here](https://hub.docker.com/search?q=airbyte%2Fsource-) is the list). We recomend that you use faker source to get started.
-> 4. `destination` param must start with `bigquery:` as only BigQuery is supported for now (contributions are welcome).
-> 5. Choose a `project` where you can run BigQuery queries and a `dataset` where you have `dataEditor` permission.
-> 6. The command will create a configuration file `./connections/my_first_connection_yaml` with initialized configuration.
-> 7. Update this configuration file to suit your needs.
+> 4. `destination` param must start with one of the following:
+>     - `bigquery:`
+>     - contributions are welcome to offer more destinations
+> 6. Choose a `project` where you can run BigQuery queries and a `dataset` where you have `dataEditor` permission.
+> 7. The command will create a configuration file `./connections/my_first_connection.yaml` with initialized configuration.
+> 8. Update this configuration file to suit your needs.
 
 ### Run it! ⚡
 
-*Once you have correctly edited the yaml configuration file* you can run the extract-load with:
 
 ``` sh
 abs run my_first_connection
 ```
+
+> 1. The `run`commmand will work only if you have correctly edited `./connections/my_first_connection.yaml` configuration file.
+> 2.  *Once you have correctly edited the yaml configuration file* you can run the extract-load with:
+
+👏 Congratulations: you just run your first Extract-Load!
+
+### Select only some streams 🧛🏼
+
+You may not want to copy all the data that the source can get. To see all the available `streams` run:
+
+``` sh
+abs list-streams my_first_connection
+```
+
+If you want to 
+
 
 Congratulation 
 
