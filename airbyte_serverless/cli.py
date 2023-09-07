@@ -1,5 +1,8 @@
 import click
-from click_help_colors import HelpColorsGroup, HelpColorsCommand
+from click_help_colors import HelpColorsGroup
+
+from . import sources
+from . import destinations
 
 
 CONNECTIONS_FOLDER = 'connections'

@@ -27,6 +27,7 @@ setuptools.setup(
     install_requires=[
         'google-cloud-bigquery',
         'pyyaml',
+        'jinja2',
         'click',
         'click-help-colors',
     ],
