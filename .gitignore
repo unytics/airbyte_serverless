@@ -1,4 +1,5 @@
 __pycache__/
 airbyte_serverless.egg-info/
 dist/
+connections/
 TODO.md

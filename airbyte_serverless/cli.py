@@ -4,11 +4,8 @@ import shutil
 import click
 from click_help_colors import HelpColorsGroup
 
-from . import sources
-from . import destinations
+from .connections import Connection
 
-
-CONNECTIONS_FOLDER = 'connections'
 
 
 @click.group(
@@ -54,5 +51,6 @@ def create(connection, source, destination):
     Create CONNECTION
     '''
     check_docker_is_installed()
-    source = sources.AirbyteSource(source)
-    print(source.config)
+    connection = Connection(connection)
+    connection.reset(source, destination)
+    print(connection.config)
