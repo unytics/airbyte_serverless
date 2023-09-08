@@ -40,6 +40,11 @@ def handle_error(msg):
     sys.exit()
 
 
+def check_docker_is_installed():
+    if shutil.which('docker') is None:
+        handle_error('`docker` is not installed')
+
+
 @cli.command()
 @click.argument('connection')
 @click.option('--source', default='airbyte/source-faker:0.1.4', help='Any Public Docker Airbyte Source. Example: `airbyte/source-faker:0.1.4`. (connectors list: https://hub.docker.com/search?q=airbyte%2Fsource-')
@@ -48,7 +53,6 @@ def create(connection, source, destination):
     '''
     Create CONNECTION
     '''
-    if shutil.which('docker') is None:
-        handle_error('`docker` is not installed')
+    check_docker_is_installed()
     source = sources.AirbyteSource(source)
     print(source.config)
