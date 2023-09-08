@@ -1,6 +1,7 @@
 import tempfile
 import subprocess
 import json
+import shutil
 
 from . import airbyte_utils
 
@@ -11,7 +12,7 @@ class AirbyteSourceException(Exception):
 
 class AirbyteSource:
 
-    def __init__(self, exec, config=None, configured_catalog=None):
+    def __init__(self, exec=None, config=None, configured_catalog=None):
         self.exec = exec
         self.config = config
         self.configured_catalog = configured_catalog
@@ -20,6 +21,7 @@ class AirbyteSource:
         self.temp_dir_for_executable = self.temp_dir  # May be different if executable is a docker image where temp dir is mounted elsewhere
 
     def _run(self, action, state=None):
+        assert self.exec, '`exec` attribute should be set'
         command = f'{self.exec} {action}'
 
         def add_argument(name, value):
@@ -119,7 +121,9 @@ class AirbyteSource:
 
 class DockerAirbyteSource(AirbyteSource):
 
-    def __init__(self, docker_image, *args, **kwargs):
-        super().__init__('', *args, **kwargs)
+    def __init__(self, docker_image=None, **kwargs):
+        assert shutil.which('docker') is not None, 'docker is needed. Please install it'
+        self.docker_image = docker_image
+        super().__init__(**kwargs)
         self.temp_dir_for_executable = '/mnt/temp'
         self.exec = f'docker run --rm -i --volume {self.temp_dir}:{self.temp_dir_for_executable} {docker_image}'

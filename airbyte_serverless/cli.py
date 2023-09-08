@@ -1,3 +1,4 @@
+import functools
 import sys
 import shutil
 
@@ -32,31 +33,42 @@ def print_command(msg):
 def print_warning(msg):
     click.echo(click.style(f'WARNING: {msg}', fg='cyan'))
 
-def handle_error(msg):
-    click.echo(click.style(f'ERROR: {msg}', fg='red'))
-    sys.exit()
+
+def handle_error(f):
+
+    @functools.wraps(f)
+    def wrapper(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except Exception as e:
+            click.echo(click.style(f'ERROR: {e}', fg='red'))
+            sys.exit()
+
+    return wrapper
 
 
-def check_docker_is_installed():
-    if shutil.which('docker') is None:
-        handle_error('`docker` is not installed')
 
 
 @cli.command()
 @click.argument('connection')
 @click.option('--source', default='airbyte/source-faker:0.1.4', help='Any Public Docker Airbyte Source. Example: `airbyte/source-faker:0.1.4`. (connectors list: https://hub.docker.com/search?q=airbyte%2Fsource-')
 @click.option('--destination', default='print', help='One of `print` or `bigquer:YOUR_PROJECT.YOUR_DATASET`')
-def create(connection, source, destination):
+@handle_error
+def init(connection, source, destination):
     '''
     Create CONNECTION
     '''
-    check_docker_is_installed()
     connection = Connection(connection)
-    if connection.config:
-        return print_info((
-            f'Connection `{connection.name}` already exists. '
-            f'If you want to re-create it, delete the file `{connection.config_filename}`'
-            ' and run this command again'
-        ))
-    connection.reset(source, destination)
+    connection.init(source, destination)
     print_success(connection.config)
+
+
+@cli.command()
+@click.argument('connection')
+@handle_error
+def list_streams(connection):
+    '''
+    List streams of CONNECTION
+    '''
+    connection = Connection(connection)
+    print_success(connection.source.streams)
