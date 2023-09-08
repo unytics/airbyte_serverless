@@ -1,6 +1,9 @@
 import os
 
+import yaml
+
 from . import sources
+
 
 CONNECTIONS_FOLDER = 'connections'
 
@@ -16,13 +19,16 @@ class Connection:
         self.config = source.config
 
     @property
-    def config(self):
-        try:
-            return open(self.config_filename, encoding='utf-8').read()
-        except:
-            pass
+    def yaml_config(self):
+        if not os.path.isfile(self.config_filename):
+            return ''
+        return open(self.config_filename, encoding='utf-8').read()
 
-    @config.setter
-    def config(self, config):
+    @yaml_config.setter
+    def yaml_config(self, config):
         os.makedirs(CONNECTIONS_FOLDER, exist_ok=True)
-        return open(self.config_filename, 'w', encoding='utf-8').write(config)
+        return open(self.config_filename, 'w', encoding='utf-8').write(yaml_config)
+    
+    @property
+    def config(self):
+        return yaml.safe_load(self.yaml_config) or {}
