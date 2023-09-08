@@ -1,7 +1,6 @@
 import tempfile
 import subprocess
 import json
-import yaml
 
 from . import airbyte_utils
 
@@ -31,15 +30,14 @@ class AirbyteSource:
         needs_config = (action != 'spec')
         if needs_config:
             assert self.config, 'config attribute is not defined'
-            config = yaml.safe_load(self.config)
-            command += add_argument('config', config)
+            command += add_argument('config', self.config)
 
         needs_configured_catalog = (action == 'read')
         if needs_configured_catalog:
             command += add_argument('catalog', self.configured_catalog)
 
         if state:
-            command += add_argument('state', self.state)
+            command += add_argument('state', state)
 
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
         for line in iter(process.stdout.readline, b""):
@@ -76,17 +74,6 @@ class AirbyteSource:
     def documentation_url(self):
         spec = self.spec
         return spec['documentationUrl']
-
-    @property
-    def config(self):
-        if self._config is None:
-            spec = self.spec
-            self._config = airbyte_utils.generate_connection_yaml_config_sample(spec)
-        return self._config
-
-    @config.setter
-    def config(self, config):
-        self._config = config
 
     @property
     def catalog(self):
