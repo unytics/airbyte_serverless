@@ -54,7 +54,6 @@ class Connection:
 
     @property
     def source(self):
-        print(self.yaml_config)
         source_config= self.config.get('source')
         assert source_config, f'File `{self.config_filename}` does not exist or does not contains a `source` field. Please create or reset the connection'
         return sources.DockerAirbyteSource(**source_config)
