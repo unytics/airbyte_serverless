@@ -53,11 +53,10 @@ def create(connection, source, destination):
     check_docker_is_installed()
     connection = Connection(connection)
     if connection.config:
-        print_info((
+        return print_info((
             f'Connection `{connection.name}` already exists. '
             f'If you want to re-create it, delete the file `{connection.config_filename}`'
             ' and run this command again'
         ))
-        return
     connection.reset(source, destination)
     print_success(connection.config)
