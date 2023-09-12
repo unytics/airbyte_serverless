@@ -80,7 +80,11 @@ class BaseDestination:
                 '_airbyte_raw_id': str(uuid.uuid4()),
                 '_airbyte_job_started_at': self.job_started_at,
                 '_airbyte_slice_started_at': self.slice_started_at,
-                '_airbyte_extracted_at': record.get('emitted_at'),
+                '_airbyte_extracted_at': (
+                    datetime.datetime.fromtimestamp(record['emitted_at'] / 1000).isoformat()
+                    if 'emitted_at' in record
+                    else None
+                ),
                 '_airbyte_loaded_at': now,
                 '_airbyte_data': json.dumps(
                     record['data'] if record_type.startswith('_airbyte_raw') else record,
@@ -129,7 +133,7 @@ class BigQueryDestination(BaseDestination):
             rows = self.bigquery.query(f'''
                 select json_extract(_airbyte_data, '$.data') as state
                 from {self.dataset}._airbyte_states
-                order by _airbyte_emitted_at desc
+                order by _airbyte_loaded_at desc
                 limit 1
             ''').result()
         except google.api_core.exceptions.NotFound:
