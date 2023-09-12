@@ -38,7 +38,7 @@ class Connection:
             ' and run this command again'
         )
         source = sources.DockerAirbyteSource(source)
-        destination = destinations.BigQueryDestination
+        destination = destinations.get_destination_class(destination)
         self.yaml_config = CONNECTION_CONFIG_TEMPLATE.render(
             source=source,
             destination=destination

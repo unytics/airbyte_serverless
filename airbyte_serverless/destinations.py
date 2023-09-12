@@ -16,6 +16,10 @@ class BaseDestination:
         ('_airbyte_data',             'json',      'Record data as json'),
     ]
 
+    yaml_definition_example = '\n'.join([
+        'buffer_size: 10000 # OPTIONAL | integer | maximum number of records in buffer before writing to destination (defaults to 10000 when not specified)',
+    ])
+
     def __init__(self, buffer_size_max=10000):
         self.buffer_size_max = buffer_size_max
 
@@ -90,12 +94,24 @@ class BaseDestination:
         raise NotImplementedError()
 
 
+class PrintDestination(BaseDestination):
+
+    def get_state(self):
+        return {}
+
+    def _write(self, record_type, records):
+        print('\n', '-' * 100)
+        print(record_type.upper())
+        for record in records:
+            print(json.dumps(record))
+
+
 class BigQueryDestination(BaseDestination):
 
-    yaml_definition_example = '\n'.join([
-        'dataset: "YOUR_PROJECT.YOUR_DATASET" # REQUIRED | string | Destination dataset. Must be fully qualified with project like `PROJECT.DATASET`',
-        'buffer_size: 10000 # OPTIONAL | integer | maximum number of records in buffer before writing to destination (defaults to 10000 when not specified)',
-    ])
+    yaml_definition_example = (
+        BaseDestination.yaml_definition_example + '\n' + 
+        'dataset: "YOUR_PROJECT.YOUR_DATASET" # REQUIRED | string | Destination dataset. Must be fully qualified with project like `PROJECT.DATASET`'
+    )
 
     def __init__(self, dataset='', **kwargs):
         super().__init__(**kwargs)
@@ -146,3 +162,13 @@ class BigQueryDestination(BaseDestination):
         ''').result()
         self.created_tables.append(table)
 
+
+def get_destination_class(destination):
+    destination_class_map = {
+        'print': PrintDestination,
+        'bigquery': BigQueryDestination,
+    }
+    destination_class = destination_class_map.get(destination)
+    assert destination_class, f'destination must be among {destination_class_map.keys()}'
+    return destination_class
+    
