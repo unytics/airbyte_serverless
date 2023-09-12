@@ -3,3 +3,4 @@ airbyte_serverless.egg-info/
 dist/
 connections/
 TODO.md
+venv/
