@@ -53,16 +53,16 @@ class BigQueryDestination(BaseDestination):
             if message['type'] == 'RECORD':
                 new_stream = message['record']['stream']
                 if new_stream != stream and stream is not None:
-                    self._insert_rows(stream, buffer)
+                    self._insert_rows(f'_airbyte_raw_{stream}', buffer)
                     buffer = []
                     self.slice_started_at = datetime.datetime.utcnow().isoformat()
                 stream = new_stream
-                buffer.append(message['record']['data'])
+                buffer.append(message['record'])
                 if len(buffer) > self.buffer_size_max:
-                    self._insert_rows(stream, buffer)
+                    self._insert_rows(f'_airbyte_raw_{stream}', buffer)
                     buffer = []
             elif message['type'] == 'STATE':
-                self._insert_rows(stream, buffer)
+                self._insert_rows(f'_airbyte_raw_{stream}', buffer)
                 buffer = []
                 self._insert_rows('_airbyte_states', [message['state']])
                 self.slice_started_at = datetime.datetime.utcnow().isoformat()
@@ -72,21 +72,25 @@ class BigQueryDestination(BaseDestination):
                 self._insert_rows('_airbyte_logs', [message['trace']])
             else:
                 raise NotImplementedError(f'message type {message["type"]} is not managed yet')
-        self._insert_rows(stream, buffer)
+        self._insert_rows(f'_airbyte_raw_{stream}', buffer)
 
     def _insert_rows(self, record_type, records):
         if not records:
             return
-        table = self._get_table_name_from_record_type(record_type)
+        table = record_type
         self._create_table_if_needed(table)
         now  = datetime.datetime.utcnow().isoformat()
         records = [
             {
-                '_airbyte_ab_id': str(uuid.uuid4()),
+                '_airbyte_raw_id': str(uuid.uuid4()),
                 '_airbyte_job_started_at': self.job_started_at,
                 '_airbyte_slice_started_at': self.slice_started_at,
-                '_airbyte_emitted_at': now,
-                '_airbyte_data': json.dumps(record, ensure_ascii=False),
+                '_airbyte_extracted_at': record.get('emitted_at'),
+                '_airbyte_loaded_at': now,
+                '_airbyte_data': json.dumps(
+                    record['data'] if record_type.startswith('_airbyte_raw') else record,
+                    ensure_ascii=False
+                ),
             }
             for record in records
         ]
@@ -94,20 +98,16 @@ class BigQueryDestination(BaseDestination):
         if errors:
             raise ValueError(f'Could not insert rows to BigQuery table {table}. Errors: {errors}')
 
-    def _get_table_name_from_record_type(self, record_type):
-        if record_type.startswith('_airbyte'):
-            return record_type
-        return f'_airbyte_raw_{record_type}'
-
     def _create_table_if_needed(self, table):
         if table in self.created_tables:
             return
         self.bigquery.query(f'''
             create table if not exists {self.dataset}.{table} (
-                _airbyte_ab_id string options(description="Record uuid generated at insertion into BigQuery"),
+                _airbyte_raw_id string options(description="Record uuid generated at insertion into BigQuery"),
                 _airbyte_job_started_at timestamp options(description="Extract-load job start timestamp"),
                 _airbyte_slice_started_at timestamp options(description="When incremental mode is used, data records are emitted by chunks a.k.a. slices. At the end of each slice, a state record is emitted to store a checkpoint. This column stores the timestamp when the slice started"),
-                _airbyte_emitted_at timestamp options(description="Record ingestion time into BigQuery"),
+                _airbyte_extracted_at timestamp options(description="Record extract time from source"),
+                _airbyte_loaded_at timestamp options(description="Record ingestion time into BigQuery"),
                 _airbyte_data json options(description="Record data as json")
             )
             partition by date(_airbyte_emitted_at)
