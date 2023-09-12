@@ -2,6 +2,8 @@ import json
 import datetime
 import uuid
 
+import yaml
+
 
 class BaseDestination:
 
@@ -53,6 +55,14 @@ class BaseDestination:
                 raise NotImplementedError(f'message type {message["type"]} is not managed yet')
         self._format_and_write(f'_airbyte_raw_{stream}', buffer)
 
+    def as_dict(self):
+        return {
+            'buffer_size_max': self.buffer_size_max,
+        }
+
+    def as_yaml(self):
+        return yaml.dump(self.as_dict())
+
     def _format_and_write(self, record_type, records):
         if not records:
             return
@@ -92,6 +102,11 @@ class BigQueryDestination(BaseDestination):
         self.bigquery = google.cloud.bigquery.Client(project=self.project)
         self.created_tables = []
 
+    def as_dict(self):
+        dic = super().as_dict()
+        dic['dataset'] = self.dataset
+        return dic
+
     def get_state(self):
         import google.api_core.exceptions
         try:
@@ -130,3 +145,4 @@ class BigQueryDestination(BaseDestination):
             )
         ''').result()
         self.created_tables.append(table)
+    

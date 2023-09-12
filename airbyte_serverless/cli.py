@@ -1,3 +1,4 @@
+import traceback
 import functools
 import sys
 import shutil
@@ -42,6 +43,7 @@ def handle_error(f):
             return f(*args, **kwargs)
         except Exception as e:
             click.echo(click.style(f'ERROR: {e}', fg='red'))
+            print(traceback.format_exc())
             sys.exit()
 
     return wrapper
@@ -52,7 +54,7 @@ def handle_error(f):
 @cli.command()
 @click.argument('connection')
 @click.option('--source', default='airbyte/source-faker:0.1.4', help='Any Public Docker Airbyte Source. Example: `airbyte/source-faker:0.1.4`. (connectors list: https://hub.docker.com/search?q=airbyte%2Fsource-')
-@click.option('--destination', default='print', help='One of `print` or `bigquery:YOUR_PROJECT.YOUR_DATASET`')
+@click.option('--destination', default='print', help='One of `print` or `bigquery`')
 @handle_error
 def create(connection, source, destination):
     '''
@@ -82,4 +84,16 @@ def list_streams(connection):
     List available streams of CONNECTION
     '''
     connection = Connection(connection)
-    print_success(connection.source.streams)
+    print_success(connection.source.available_streams)
+
+
+@cli.command()
+@click.argument('connection')
+@handle_error
+def run(connection):
+    '''
+    Run Extract-Load for CONNECTION
+    '''
+    connection = Connection(connection)
+    connection.run()
+    print_success('OK')

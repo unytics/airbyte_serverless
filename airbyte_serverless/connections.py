@@ -14,6 +14,9 @@ source:
   docker_image: {{ source_docker_image }}
   config:
     {{ source_yaml_config | indent(4, False) }}
+destination:
+  type: 
+  config: 
 ''')
 
 
@@ -69,5 +72,12 @@ class Connection:
     def destination(self):
         destination_config= self.config.get('destination')
         assert destination_config, f'File `{self.config_filename}` does not exist or does not contains a `destination` field. Please create or reset the connection'
+        destination_type
         return destinations.BigQueryDestination(**destination_config)
+    
+    @property
+    def run(self):
+        state = self.destination.get_state()
+        messages = self.source.extract(state=state)
+        self.destination.load(messages)
     
