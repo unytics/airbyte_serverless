@@ -11,6 +11,7 @@ class AirbyteSourceException(Exception):
     pass
 
 
+
 class AirbyteSource:
 
     def __init__(self, exec=None, config=None, streams='*'):
@@ -21,21 +22,19 @@ class AirbyteSource:
         self.temp_dir = self.temp_dir_obj.name
         self.temp_dir_for_executable = self.temp_dir  # May be different if executable is a docker image where temp dir is mounted elsewhere
 
-    def yaml_sample_config(self):
-        yaml_config = '''exec: "python main.py" # REQUIRED | string | Command to launch the Airbyte Source
-streams: # OPTIONAL | array | List of streams to retrieve. If missing, all streams are retrieved from source.
-  - stream1  # OPTIONAL | string | 
-  - stream2
-  '''
-
-        
-    def as_yaml(self):
-        content = yaml.dump(self.as_dict())
-        if 'config: null' in content:
-            spec = self.spec
-            config_yaml = airbyte_utils.generate_connection_yaml_config_sample(spec)        
-            return re.sub('config: null', 'config: |\n  ' + config_yaml.replace('\n', '\n  '), content)
-        return content
+    @property
+    def yaml_definition_example(self):
+        yaml_definition_example = (
+            'exec: "python main.py" # REQUIRED | string | Command to launch the Airbyte Source'
+            'config: TO_REPLACE'
+            'streams: null # OPTIONAL | array | List of streams to retrieve. If missing or null, all streams are retrieved from source.'
+        )
+        spec = self.spec
+        config_yaml = airbyte_utils.generate_connection_yaml_config_sample(spec)
+        return yaml_definition_example.replace(
+            'TO_REPLACE',
+            '\n  ' + config_yaml.replace('\n', '\n  ')
+        )
 
     def _run(self, action, state=None):
         assert self.exec, '`exec` attribute should be set'
@@ -145,9 +144,10 @@ class DockerAirbyteSource(AirbyteSource):
         self.temp_dir_for_executable = '/mnt/temp'
         self.exec = f'docker run --rm -i --volume {self.temp_dir}:{self.temp_dir_for_executable} {docker_image}'
 
-    def as_dict(self):
-        return {
-            'docker_image': self.docker_image,
-            'config': self.config,
-            'streams': self.streams,
-        }
+    @property
+    def yaml_definition_example(self):
+        return re.sub(
+            'exec:.*',
+            f'docker_image: "{self.docker_image}"',
+            super().yaml_definition_example()
+        )

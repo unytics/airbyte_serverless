@@ -102,10 +102,9 @@ class BigQueryDestination(BaseDestination):
         self.bigquery = google.cloud.bigquery.Client(project=self.project)
         self.created_tables = []
 
-    def as_dict(self):
-        dic = super().as_dict()
-        dic['dataset'] = self.dataset
-        return dic
+    @property
+    def yaml_definition_example(self):
+        return 'dataset: "" | REQUIRED | string | Destination dataset. Must be fully qualified with project like `PROJECT.DATASET`
 
     def get_state(self):
         import google.api_core.exceptions
@@ -145,4 +144,4 @@ class BigQueryDestination(BaseDestination):
             )
         ''').result()
         self.created_tables.append(table)
-    
+
