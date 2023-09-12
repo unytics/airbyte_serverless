@@ -172,7 +172,7 @@ DESTINATION_CLASS_MAP = {
 class Destination:
 
     def __init__(self, connector=None, config=None):
-        assert connector in DESTINATION_CLASS_MAP, f'destination should be among {DESTINATION_CLASS_MAP.keys()}'
+        assert connector in DESTINATION_CLASS_MAP, f'destination should be among {list(DESTINATION_CLASS_MAP.keys())}'
         self.destination_class = DESTINATION_CLASS_MAP[connector]
         self.connector = connector
         self.config = config
@@ -181,8 +181,8 @@ class Destination:
     @property
     def yaml_definition_example(self):
         return '\n'.join([
-            f'connector: "{self.connector}"',
-            'config:',
+            f'connector: "{self.connector}" # REQUIRED | string | An AirbyteServerless Destination Connector. Must be one of {list(DESTINATION_CLASS_MAP.keys())}',
+            f'config: # REQUIRED | object | Config for this connector `{self.connector}`',
             '  ' + self.destination_class.yaml_definition_example.replace('\n', '\n  '),
         ])
 

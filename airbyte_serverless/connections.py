@@ -3,8 +3,8 @@ import os
 import yaml
 import jinja2
 
-from . import sources
-from . import destinations
+from .sources import Source
+from .destinations import Destination
 
 
 CONNECTIONS_FOLDER = 'connections'
@@ -37,8 +37,8 @@ class Connection:
             f'If you want to re-init it, delete the file `{self.config_filename}`'
             ' and run this command again'
         )
-        source = sources.DockerAirbyteSource(source)
-        destination = destinations.Destination(destination)
+        source = Source(source)
+        destination = Destination(destination)
         self.yaml_config = CONNECTION_CONFIG_TEMPLATE.render(
             source=source,
             destination=destination
@@ -63,15 +63,14 @@ class Connection:
     def source(self):
         source_config= self.config.get('source')
         assert source_config, f'File `{self.config_filename}` does not exist or does not contains a `source` field. Please create or reset the connection'
-        return sources.DockerAirbyteSource(**source_config)
+        return Source(**source_config)
 
     @property
     def destination(self):
         destination_config= self.config.get('destination')
         assert destination_config, f'File `{self.config_filename}` does not exist or does not contains a `destination` field. Please create or reset the connection'
-        return destinations.Destination(**destination_config)
+        return Destination(**destination_config)
 
-    @property
     def run(self):
         state = self.destination.get_state()
         messages = self.source.extract(state=state)
