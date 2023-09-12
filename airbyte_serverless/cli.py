@@ -57,7 +57,7 @@ def handle_error(f):
 
 @cli.command()
 @click.argument('connection')
-@click.option('--source', default='airbyte/source-faker:0.1.4', help='Any Public Docker Airbyte Source. Example: `airbyte/source-faker:0.1.4`. (connectors list: https://hub.docker.com/search?q=airbyte%2Fsource-')
+@click.option('--source', default='airbyte/source-faker:0.1.4', help='Any Public Docker Airbyte Source. Example: `airbyte/source-faker:0.1.4`. (see connectors list at: "https://hub.docker.com/search?q=airbyte%2Fsource-" )')
 @click.option('--destination', default='print', help='One of `print` or `bigquery`')
 @handle_error
 def create(connection, source, destination):

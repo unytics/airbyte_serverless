@@ -38,7 +38,7 @@ class Connection:
             ' and run this command again'
         )
         source = sources.DockerAirbyteSource(source)
-        destination = destinations.get_destination_class(destination)
+        destination = destinations.Destination(destination)
         self.yaml_config = CONNECTION_CONFIG_TEMPLATE.render(
             source=source,
             destination=destination
@@ -69,7 +69,7 @@ class Connection:
     def destination(self):
         destination_config= self.config.get('destination')
         assert destination_config, f'File `{self.config_filename}` does not exist or does not contains a `destination` field. Please create or reset the connection'
-        return destinations.BigQueryDestination(**destination_config)
+        return destinations.Destination(**destination_config)
 
     @property
     def run(self):

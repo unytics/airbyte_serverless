@@ -17,7 +17,7 @@ class BaseDestination:
     ]
 
     yaml_definition_example = '\n'.join([
-        'buffer_size: 10000 # OPTIONAL | integer | maximum number of records in buffer before writing to destination (defaults to 10000 when not specified)',
+        'buffer_size_max: 10000 # OPTIONAL | integer | maximum number of records in buffer before writing to destination (defaults to 10000 when not specified)',
     ])
 
     def __init__(self, buffer_size_max=10000):
@@ -110,7 +110,7 @@ class BigQueryDestination(BaseDestination):
 
     yaml_definition_example = (
         BaseDestination.yaml_definition_example + '\n' + 
-        'dataset: "YOUR_PROJECT.YOUR_DATASET" # REQUIRED | string | Destination dataset. Must be fully qualified with project like `PROJECT.DATASET`'
+        'dataset: "" # REQUIRED | string | Destination dataset. Must be fully qualified with project like `PROJECT.DATASET`'
     )
 
     def __init__(self, dataset='', **kwargs):
@@ -163,12 +163,34 @@ class BigQueryDestination(BaseDestination):
         self.created_tables.append(table)
 
 
-def get_destination_class(destination):
-    destination_class_map = {
-        'print': PrintDestination,
-        'bigquery': BigQueryDestination,
-    }
-    destination_class = destination_class_map.get(destination)
-    assert destination_class, f'destination must be among {destination_class_map.keys()}'
-    return destination_class
+DESTINATION_CLASS_MAP = {
+    'print': PrintDestination,
+    'bigquery': BigQueryDestination,
+}
+
+
+class Destination:
+
+    def __init__(self, connector=None, config=None):
+        assert connector in DESTINATION_CLASS_MAP, f'destination should be among {DESTINATION_CLASS_MAP.keys()}'
+        self.destination_class = DESTINATION_CLASS_MAP[connector]
+        self.connector = connector
+        self.config = config
+        self._destination = None
+        
+    @property
+    def yaml_definition_example(self):
+        return '\n'.join([
+            f'connector: "{self.connector}"',
+            'config:',
+            '  ' + self.destination_class.yaml_definition_example.replace('\n', '\n  '),
+        ])
+
+    def __getattr__(self, name):
+        if self._destination is None:
+            self._destination = self.destination_class(**config)
+        return getattr(self._destination, name)
+
+    
+    
     
