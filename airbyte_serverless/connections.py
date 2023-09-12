@@ -17,6 +17,13 @@ source:
 ''')
 
 
+def list_connections():
+    return [
+        filename.replace('.yaml', '')
+        for filename in os.listdir(CONNECTIONS_FOLDER)
+        if filename.endswith('.yaml')
+    ]
+
 
 class Connection:
 

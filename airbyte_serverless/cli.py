@@ -5,7 +5,7 @@ import shutil
 import click
 from click_help_colors import HelpColorsGroup
 
-from .connections import Connection
+from .connections import Connection, list_connections
 
 
 
@@ -52,7 +52,7 @@ def handle_error(f):
 @cli.command()
 @click.argument('connection')
 @click.option('--source', default='airbyte/source-faker:0.1.4', help='Any Public Docker Airbyte Source. Example: `airbyte/source-faker:0.1.4`. (connectors list: https://hub.docker.com/search?q=airbyte%2Fsource-')
-@click.option('--destination', default='print', help='One of `print` or `bigquer:YOUR_PROJECT.YOUR_DATASET`')
+@click.option('--destination', default='print', help='One of `print` or `bigquery:YOUR_PROJECT.YOUR_DATASET`')
 @handle_error
 def create(connection, source, destination):
     '''
@@ -60,15 +60,26 @@ def create(connection, source, destination):
     '''
     connection = Connection(connection)
     connection.init(source, destination)
-    print_success(connection.config)
+    print_success(f'Created connection `{connection.name}` with source `{source}` and destination `{destination}`')
 
+
+@cli.command()
+@handle_error
+def list():
+    '''
+    List created connections
+    '''
+    print_success(
+        'Configured Connections are:\n' +
+        '\n'.join([f'- {connection}' for connection in list_connections() or ['NONE']])
+    )
 
 @cli.command()
 @click.argument('connection')
 @handle_error
 def list_streams(connection):
     '''
-    List streams of CONNECTION
+    List available streams of CONNECTION
     '''
     connection = Connection(connection)
     print_success(connection.source.streams)
