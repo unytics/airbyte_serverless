@@ -24,16 +24,16 @@ class AirbyteSource:
 
     @property
     def yaml_definition_example(self):
-        yaml_definition_example = (
-            'exec: "python main.py" # REQUIRED | string | Command to launch the Airbyte Source'
-            'config: TO_REPLACE'
-            'streams: null # OPTIONAL | array | List of streams to retrieve. If missing or null, all streams are retrieved from source.'
-        )
+        yaml_definition_example = '\n'.join([
+            'exec: "python main.py" # REQUIRED | string | Command to launch the Airbyte Source',
+            'config: TO_REPLACE',
+            'streams: null # OPTIONAL | array | List of streams to retrieve. If missing or null, all streams are retrieved from source.',
+        ])
         spec = self.spec
         config_yaml = airbyte_utils.generate_connection_yaml_config_sample(spec)
         return yaml_definition_example.replace(
             'TO_REPLACE',
-            '\n  ' + config_yaml.replace('\n', '\n  ')
+            config_yaml.replace('\n', '\n  ').strip()
         )
 
     def _run(self, action, state=None):
@@ -149,5 +149,5 @@ class DockerAirbyteSource(AirbyteSource):
         return re.sub(
             'exec:.*',
             f'docker_image: "{self.docker_image}"',
-            super().yaml_definition_example()
+            super().yaml_definition_example
         )

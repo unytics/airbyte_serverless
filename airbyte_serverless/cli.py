@@ -6,6 +6,7 @@ import shutil
 import click
 from click_help_colors import HelpColorsGroup
 
+from .sources import AirbyteSourceException
 from .connections import Connection, list_connections
 
 
@@ -41,6 +42,9 @@ def handle_error(f):
     def wrapper(*args, **kwargs):
         try:
             return f(*args, **kwargs)
+        except (AssertionError, AirbyteSourceException) as e:
+            click.echo(click.style(f'ERROR: {e}', fg='red'))
+            sys.exit()
         except Exception as e:
             click.echo(click.style(f'ERROR: {e}', fg='red'))
             print(traceback.format_exc())

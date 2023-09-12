@@ -92,6 +92,11 @@ class BaseDestination:
 
 class BigQueryDestination(BaseDestination):
 
+    yaml_definition_example = '\n'.join([
+        'dataset: "YOUR_PROJECT.YOUR_DATASET" # REQUIRED | string | Destination dataset. Must be fully qualified with project like `PROJECT.DATASET`',
+        'buffer_size: 10000 # OPTIONAL | integer | maximum number of records in buffer before writing to destination (defaults to 10000 when not specified)',
+    ])
+
     def __init__(self, dataset='', **kwargs):
         super().__init__(**kwargs)
         import google.cloud.bigquery
@@ -101,10 +106,6 @@ class BigQueryDestination(BaseDestination):
         self.project, _ = self.dataset.split('.')
         self.bigquery = google.cloud.bigquery.Client(project=self.project)
         self.created_tables = []
-
-    @property
-    def yaml_definition_example(self):
-        return 'dataset: "" | REQUIRED | string | Destination dataset. Must be fully qualified with project like `PROJECT.DATASET`
 
     def get_state(self):
         import google.api_core.exceptions
