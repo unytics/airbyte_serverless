@@ -11,7 +11,6 @@ class AirbyteSourceException(Exception):
     pass
 
 
-
 class AirbyteSource:
 
     def __init__(self, exec=None, config=None, streams='*'):
@@ -100,22 +99,18 @@ class AirbyteSource:
 
     @property
     def configured_catalog(self):
-        if self._configured_catalog is None:
-            self._configured_catalog = self.catalog
-            self._configured_catalog['streams'] = [
-                {
-                    "stream": stream,
-                    "sync_mode": "incremental" if 'incremental' in stream['supported_sync_modes'] else 'full_refresh',
-                    "destination_sync_mode": "append",
-                    "cursor_field": stream.get('default_cursor_field', [])
-                }
-                for stream in self._configured_catalog['streams']
-            ]
-        return self._configured_catalog
-
-    @configured_catalog.setter
-    def configured_catalog(self, configured_catalog):
-        self._configured_catalog = configured_catalog
+        configured_catalog = self.catalog
+        configured_catalog['streams'] = [
+            {
+                "stream": stream,
+                "sync_mode": "incremental" if 'incremental' in stream['supported_sync_modes'] else 'full_refresh',
+                "destination_sync_mode": "append",
+                "cursor_field": stream.get('default_cursor_field', [])
+            }
+            for stream in configured_catalog['streams']
+            if not self.streams or stream in self.streams
+        ]
+        return configured_catalog
 
     @property
     def available_streams(self):

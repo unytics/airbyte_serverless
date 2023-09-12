@@ -188,7 +188,7 @@ class Destination:
 
     def __getattr__(self, name):
         if self._destination is None:
-            self._destination = self.destination_class(**config)
+            self._destination = self.destination_class(**self.config)
         return getattr(self._destination, name)
 
     
