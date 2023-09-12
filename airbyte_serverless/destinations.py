@@ -14,7 +14,7 @@ class BaseDestination:
         ('_airbyte_data',             'json',      'Record data as json'),
     ]
 
-    def __init__(self, buffer_size_max=10000, **kwargs):
+    def __init__(self, buffer_size_max=10000):
         self.buffer_size_max = buffer_size_max
 
     def get_state(self):
