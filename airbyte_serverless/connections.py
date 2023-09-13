@@ -5,7 +5,7 @@ import jinja2
 
 from .sources import Source
 from .destinations import Destination
-from .deployers import LocalDockerDeployer
+from .deployers import Deployer
 
 
 CONNECTIONS_FOLDER = 'connections'
@@ -13,8 +13,12 @@ CONNECTIONS_FOLDER = 'connections'
 CONNECTION_CONFIG_TEMPLATE = jinja2.Template('''
 source:
   {{ source.yaml_definition_example | indent(2, False) }}
+
 destination:
   {{ destination.yaml_definition_example | indent(2, False) }}
+
+deployer:
+  {{ deployer.yaml_definition_example | indent(2, False) }}
 ''')
 
 
@@ -33,7 +37,7 @@ class Connection:
         self.config_filename = f'{CONNECTIONS_FOLDER}/{self.name}.yaml'
         self.is_deployed = is_deployed
 
-    def init(self, source, destination):
+    def init(self, source, destination, deployer):
         assert not self.config, (
             f'Connection `{self.name}` already exists. '
             f'If you want to re-init it, delete the file `{self.config_filename}`'
@@ -41,9 +45,11 @@ class Connection:
         )
         source = Source(source)
         destination = Destination(destination)
+        deployer = Deployer(deployer)
         self.yaml_config = CONNECTION_CONFIG_TEMPLATE.render(
             source=source,
-            destination=destination
+            destination=destination,
+            deployer=deployer,
         )
 
     @property
@@ -79,6 +85,6 @@ class Connection:
         self.destination.load(messages)
 
     def deploy(self):
-        deployer = LocalDockerDeployer(self)
+        deployer = Deployer(self)
         deployer.deploy_and_run()
 

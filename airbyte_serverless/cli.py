@@ -59,14 +59,15 @@ def handle_error(f):
 @click.argument('connection')
 @click.option('--source', default='airbyte/source-faker:0.1.4', help='Any Public Docker Airbyte Source. Example: `airbyte/source-faker:0.1.4`. (see connectors list at: "https://hub.docker.com/search?q=airbyte%2Fsource-" )')
 @click.option('--destination', default='print', help='One of `print` or `bigquery`')
+@click.option('--deployer', default='cloud_run_job', help='One of `local_docker` or `cloud_run_job`')
 @handle_error
-def create(connection, source, destination):
+def create(connection, source, destination, deployer):
     '''
     Create CONNECTION
     '''
     connection = Connection(connection)
-    connection.init(source, destination)
-    print_success(f'Created connection `{connection.name}` with source `{source}` and destination `{destination}`')
+    connection.init(source, destination, deployer)
+    print_success(f'Created connection `{connection.name}` with source `{source}` and destination `{destination}` and deployer `{deployer}`')
 
 
 @cli.command()

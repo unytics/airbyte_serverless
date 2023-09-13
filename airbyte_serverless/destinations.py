@@ -59,14 +59,6 @@ class BaseDestination:
                 raise NotImplementedError(f'message type {message["type"]} is not managed yet')
         self._format_and_write(f'_airbyte_raw_{stream}', buffer)
 
-    def as_dict(self):
-        return {
-            'buffer_size_max': self.buffer_size_max,
-        }
-
-    def as_yaml(self):
-        return yaml.dump(self.as_dict())
-
     def _format_and_write(self, record_type, records):
         if not records:
             return
