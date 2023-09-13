@@ -26,7 +26,7 @@ class ExecutableAirbyteSource:
         yaml_definition_example = '\n'.join([
             'connector: "python main.py" # REQUIRED | string | Command to launch the Airbyte Source',
             'config: TO_REPLACE',
-            'streams: null # OPTIONAL | array | List of streams to retrieve. If missing or null, all streams are retrieved from source.',
+            'streams: # OPTIONAL | array | List of streams to retrieve. If missing, all streams are retrieved from source.',
         ])
         spec = self.spec
         config_yaml = airbyte_utils.generate_connection_yaml_config_sample(spec)
@@ -135,7 +135,6 @@ class DockerAirbyteSource(ExecutableAirbyteSource):
     def __init__(self, connector=None, config=None, streams=None):
         assert shutil.which('docker') is not None, 'docker is needed. Please install it'
         self.docker_image = connector
-        self._get_docker_entrypoint()
         super().__init__('', config, streams)
         self.temp_dir_for_executable = '/mnt/temp'
         self.exec = f'docker run --rm -i --volume {self.temp_dir}:{self.temp_dir_for_executable} {self.docker_image}'
@@ -143,26 +142,28 @@ class DockerAirbyteSource(ExecutableAirbyteSource):
     def _get_docker_entrypoint(self):
         command = f'docker inspect {self.docker_image} -f "{{{{json .Config.Entrypoint}}}}"'
         output = subprocess.check_output(command, shell=True)
-        self.docker_entrypoint = output.decode().strip()
-        print(self.docker_entrypoint)
+        output = output.decode().strip()
+        return ' '.join(json.loads(output))
 
     @property
     def yaml_definition_example(self):
+        yaml_definition_example = super().yaml_definition_example
+        docker_entrypoint = self._get_docker_entrypoint()
         return re.sub(
             'connector:.*',
             (
-                f'connector: "{self.docker_image}" # REQUIRED | string | Any Public Docker Airbyte Source. Example: `airbyte/source-faker0.1.4`. (see connectors list at: "https://hub.docker.com/search?q=airbyte%2Fsource-" )\n' +
-                f'docker_entrypoint: "{self.docker_entrypoint}" # GENERATED | string | Command executed inside the docker container to run the Airbyte Connector'
+                f'connector: "{self.docker_image}" # GENERATED | string | A Public Docker Airbyte Source. Example: `airbyte/source-faker0.1.4`. (see connectors list at: "https://hub.docker.com/search?q=airbyte%2Fsource-" )\n' +
+                f'docker_entrypoint: "{docker_entrypoint}" # GENERATED | string | Command executed inside the docker container to run the Airbyte Connector. Used for serverless deployment'
             ),
-            super().yaml_definition_example
+            yaml_definition_example
         )
 
 
 class Source:
 
-    def __init__(self, connector=None, config=None, streams=None):
+    def __init__(self, connector=None, config=None, streams=None, **kawargs):
         assert connector, 'connector argument must be provided'
-        if re.match('^airbyte/source-[a-zA-Z]+:?[\w\.]*$', connector):
+        if re.match('^airbyte/source-[a-zA-Z-]+:?[\w\.]*$', connector):
             self.source = DockerAirbyteSource(connector, config, streams)
         else:
             self.source = ExecutableAirbyteSource(connector, config, streams)

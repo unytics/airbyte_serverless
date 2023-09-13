@@ -185,8 +185,8 @@ class Destination:
     @property
     def yaml_definition_example(self):
         return '\n'.join([
-            f'connector: "{self.connector}" # REQUIRED | string | An AirbyteServerless Destination Connector. Must be one of {list(DESTINATION_CLASS_MAP.keys())}',
-            f'config: # REQUIRED | object | Config for this connector `{self.connector}`',
+            f'connector: "{self.connector}" # GENERATED | string | An AirbyteServerless Destination Connector. Must be one of {list(DESTINATION_CLASS_MAP.keys())}',
+            f'config: # PREGENERATED | object | Pre-Generated when this file was created. PLEASE UPDATE this config',
             '  ' + self.destination_class.yaml_definition_example.replace('\n', '\n  '),
         ])
 

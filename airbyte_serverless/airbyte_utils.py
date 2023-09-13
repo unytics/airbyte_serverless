@@ -11,7 +11,7 @@ from typing import Any, Callable, List
 import jinja2
 
 
-TEMPLATE = jinja2.Template('''# Documentation to configure this connector can be found at {{ documentation_url }}
+TEMPLATE = jinja2.Template('''# PREGENERATED | object | Pre-Generated when this file was created. Please update by following the documentation {{ documentation_url }}
 {%- macro render_field(field, is_commented) %}
 {%- if is_commented %}# {% endif %}{{ field.name }}:{% if field.default %} {% if field.airbyte_secret %}{{ field.default }}{% else %}{{ field.default | tojson() }}{% endif %}{% endif %} # {{ field.comment }}
 {%- endmacro %}
