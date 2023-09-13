@@ -27,9 +27,10 @@ def list_connections():
 
 class Connection:
 
-    def __init__(self, name):
+    def __init__(self, name, is_deployed=False):
         self.name = name
         self.config_filename = f'{CONNECTIONS_FOLDER}/{self.name}.yaml'
+        self.is_deployed = is_deployed
 
     def init(self, source, destination):
         assert not self.config, (
@@ -63,7 +64,7 @@ class Connection:
     def source(self):
         source_config= self.config.get('source')
         assert source_config, f'File `{self.config_filename}` does not exist or does not contains a `source` field. Please create or reset the connection'
-        return Source(**source_config)
+        return Source(**source_config, is_deployed=self.is_deployed)
 
     @property
     def destination(self):

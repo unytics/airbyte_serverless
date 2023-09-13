@@ -13,8 +13,8 @@ class AirbyteSourceException(Exception):
 
 class ExecutableAirbyteSource:
 
-    def __init__(self, connector=None, config=None, streams='*'):
-        self.exec = connector
+    def __init__(self, executable=None, config=None, streams='*'):
+        self.executable = executable
         self.config = config
         self.streams = streams
         self.temp_dir_obj = tempfile.TemporaryDirectory()  # Used to dump config as files used by airbyte connector
@@ -24,7 +24,7 @@ class ExecutableAirbyteSource:
     @property
     def yaml_definition_example(self):
         yaml_definition_example = '\n'.join([
-            'connector: "python main.py" # REQUIRED | string | Command to launch the Airbyte Source',
+            f'executable: "{self.executable}" # GENERATED | string | Command to launch the Airbyte Source',
             'config: TO_REPLACE',
             'streams: # OPTIONAL | array | List of streams to retrieve. If missing, all streams are retrieved from source.',
         ])
@@ -36,8 +36,8 @@ class ExecutableAirbyteSource:
         )
 
     def _run(self, action, state=None):
-        assert self.exec, '`exec` attribute should be set'
-        command = f'{self.exec} {action}'
+        assert self.executable, '`executable` attribute should be set'
+        command = f'{self.executable} {action}'
 
         def add_argument(name, value):
             file = open(f'{self.temp_dir}/{name}.json', 'w', encoding='utf-8')
@@ -137,7 +137,7 @@ class DockerAirbyteSource(ExecutableAirbyteSource):
         self.docker_image = connector
         super().__init__('', config, streams)
         self.temp_dir_for_executable = '/mnt/temp'
-        self.exec = f'docker run --rm -i --volume {self.temp_dir}:{self.temp_dir_for_executable} {self.docker_image}'
+        self.executable = f'docker run --rm -i --volume {self.temp_dir}:{self.temp_dir_for_executable} {self.docker_image}'
 
     def _get_docker_entrypoint(self):
         command = f'docker inspect {self.docker_image} -f "{{{{json .Config.Entrypoint}}}}"'
@@ -150,9 +150,9 @@ class DockerAirbyteSource(ExecutableAirbyteSource):
         yaml_definition_example = super().yaml_definition_example
         docker_entrypoint = self._get_docker_entrypoint()
         return re.sub(
-            'connector:.*',
+            'executable:.*',
             (
-                f'connector: "{self.docker_image}" # GENERATED | string | A Public Docker Airbyte Source. Example: `airbyte/source-faker0.1.4`. (see connectors list at: "https://hub.docker.com/search?q=airbyte%2Fsource-" )\n' +
+                f'docker_image: "{self.docker_image}" # GENERATED | string | A Public Docker Airbyte Source. Example: `airbyte/source-faker0.1.4`. (see connectors list at: "https://hub.docker.com/search?q=airbyte%2Fsource-" )\n' +
                 f'docker_entrypoint: "{docker_entrypoint}" # GENERATED | string | Command executed inside the docker container to run the Airbyte Connector. Used for serverless deployment'
             ),
             yaml_definition_example
@@ -161,12 +161,21 @@ class DockerAirbyteSource(ExecutableAirbyteSource):
 
 class Source:
 
-    def __init__(self, connector=None, config=None, streams=None, **kawargs):
-        assert connector, 'connector argument must be provided'
-        if re.match('^airbyte/source-[a-zA-Z-]+:?[\w\.]*$', connector):
-            self.source = DockerAirbyteSource(connector, config, streams)
-        else:
-            self.source = ExecutableAirbyteSource(connector, config, streams)
+    def __init__(self, docker_image_or_executable=None, docker_image=None, executable=None, config=None, streams=None, is_deployed=False, docker_entrypoint=None):
+        if docker_image_or_executable:
+            if re.match('^airbyte/source-[a-zA-Z-]+:?[\w\.]*$', docker_image_or_executable):
+                docker_image = docker_image_or_executable
+            else:
+                executable = docker_image_or_executable
+
+        if docker_image:
+            if is_deployed:
+                assert docker_entrypoint, "docker_entrypoint missing"
+                self.source = ExecutableAirbyteSource(docker_entrypoint, config, streams)
+            else:
+                self.source = DockerAirbyteSource(docker_image, config, streams)
+        elif executable:
+            self.source = ExecutableAirbyteSource(executable, config, streams)
 
     def __getattr__(self, name):
         return getattr(self.source, name)
