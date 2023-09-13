@@ -5,7 +5,7 @@ import jinja2
 
 from .sources import Source
 from .destinations import Destination
-from .deployer import CloudRunJobDeployer
+from .deployers import LocalDockerDeployer
 
 
 CONNECTIONS_FOLDER = 'connections'
@@ -79,6 +79,6 @@ class Connection:
         self.destination.load(messages)
 
     def deploy(self):
-        deployer = CloudRunJobDeployer(self.name, self.config, {})
-        deployer.deploy()
+        deployer = LocalDockerDeployer(self)
+        deployer.deploy_and_run()
 

@@ -102,3 +102,15 @@ def run(connection, from_deployed_docker_image):
     connection = Connection(connection, is_deployed=from_deployed_docker_image)
     connection.run()
     print_success('OK')
+
+
+@cli.command()
+@click.argument('connection')
+@handle_error
+def deploy(connection):
+    '''
+    Deploy CONNECTION
+    '''
+    connection = Connection(connection)
+    connection.deploy()
+    print_success('OK')
