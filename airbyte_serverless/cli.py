@@ -93,11 +93,12 @@ def list_streams(connection):
 
 @cli.command()
 @click.argument('connection')
+@click.option('--from-deployed-docker-image', is_flag=True, default=False, help="Set this flag only in a deployed docker image")
 @handle_error
-def run(connection):
+def run(connection, from_deployed_docker_image):
     '''
     Run Extract-Load for CONNECTION
     '''
-    connection = Connection(connection)
+    connection = Connection(connection, is_deployed=from_deployed_docker_image)
     connection.run()
     print_success('OK')

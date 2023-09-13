@@ -5,6 +5,7 @@ import jinja2
 
 from .sources import Source
 from .destinations import Destination
+from .deployer import CloudRunJobDeployer
 
 
 CONNECTIONS_FOLDER = 'connections'
@@ -76,3 +77,8 @@ class Connection:
         state = self.destination.get_state()
         messages = self.source.extract(state=state)
         self.destination.load(messages)
+
+    def deploy(self):
+        deployer = CloudRunJobDeployer(self.name, self.config, {})
+        deployer.deploy()
+
