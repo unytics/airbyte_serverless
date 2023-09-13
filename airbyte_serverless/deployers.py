@@ -10,11 +10,9 @@ RUN pip install airbyte-serverless==0.14
 
 ENV PYTHONUNBUFFERED True
 
-COPY <<EOF ./connections/connection.yaml
-{connection_config}
-EOF
+COPY connection.yaml ./connections/connection.yaml
 
-ENTRYPOINT echo "salut" && abs run connection --from-deployed-docker-image
+ENTRYPOINT abs run connection --from-deployed-docker-image
 
 '''
 
@@ -47,9 +45,11 @@ class BaseDeployer:
         self.run()
 
     def create_dockerfile(self):
+        open(f'{self.folder}/connection.yaml', 'w', encoding='utf-8').write(
+            self.connection.yaml_config
+        )
         dockerfile = DOCKERFILE.format(
-            docker_image=self.connection.source.docker_image,
-            connection_config=self.connection.yaml_config,
+            docker_image=self.connection.source.docker_image
         )
         open(f'{self.folder}/Dockerfile', 'w', encoding='utf-8').write(dockerfile)
 
