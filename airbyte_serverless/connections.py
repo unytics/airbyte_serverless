@@ -7,7 +7,7 @@ import jinja2
 
 from .sources import Source
 from .destinations import Destination
-from .deployers import Deployer
+from .runners import Runner
 
 
 
@@ -18,8 +18,8 @@ source:
 destination:
   {{ destination.yaml_definition_example | indent(2, False) }}
 
-deployer:
-  {{ deployer.yaml_definition_example | indent(2, False) }}
+remote_runner:
+  {{ remote_runner.yaml_definition_example | indent(2, False) }}
 ''')
 
 
@@ -33,14 +33,14 @@ class Connection:
     def __init__(self, yaml_config):
         self.yaml_config = yaml_config
 
-    def init_yaml_config(self, source, destination, deployer):
+    def init_yaml_config(self, source, destination, remote_runner):
         source = Source(source)
         destination = Destination(destination)
-        deployer = Deployer(deployer)
+        remote_runner = Runner(remote_runner, self)
         self.yaml_config = CONNECTION_CONFIG_TEMPLATE.render(
             source=source,
             destination=destination,
-            deployer=deployer,
+            remote_runner=remote_runner,
         )
 
     @property
@@ -53,24 +53,24 @@ class Connection:
 
     @property
     def source(self):
-        source_config = self.config.get('source')
-        assert source_config, f'yaml_config does not contain a `source` field. Please re-create connection'
-        return Source(**source_config)
+        assert self.config, 'connection config does not exist. Please re-create connection'
+        return Source(**self.config['source'])
 
     @property
     def destination(self):
-        destination_config = self.config.get('destination')
-        assert destination_config, f'yaml_config does not contain a `destination` field. Please re-create connection'
-        return Destination(**destination_config)
+        assert self.config, 'connection config does not exist. Please re-create connection'
+        return Destination(**self.config['destination'])
+
+    @property
+    def remote_runner(self):
+        assert self.config, 'connection config does not exist. Please re-create connection'
+        return Runner(self.config['remote_runner']['type'], self)
 
     def run(self):
-        state = self.destination.get_state()
-        messages = self.source.extract(state=state)
-        self.destination.load(messages)
+        Runner('direct', self).run()
 
-    def deploy(self):
-        deployer = Deployer(self)
-        deployer.deploy_and_run()
+    def run_remotely(self):
+        self.remote_runner.run()
 
 
 
@@ -86,13 +86,13 @@ class ConnectionFromFile(Connection):
         self.name = name
         self.config_filename = f'{self.CONNECTIONS_FOLDER}/{self.name}.yaml'
 
-    def init_yaml_config(self, source, destination, deployer):
+    def init_yaml_config(self, source, destination, remote_runner):
         assert not self.config, (
             f'Connection `{self.name}` already exists. '
             f'If you want to re-init it, delete the file `{self.config_filename}`'
             ' and run this command again'
         )
-        super().init_yaml_config(source, destination, deployer)
+        super().init_yaml_config(source, destination, remote_runner)
 
     @property
     def yaml_config(self):

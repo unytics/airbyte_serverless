@@ -1,7 +1,7 @@
 import setuptools
 
 
-VERSION = '0.16'
+VERSION = '0.17'
 
 
 with open('README.md', 'r', encoding='utf-8') as fh:
@@ -26,6 +26,7 @@ setuptools.setup(
     python_requires='>=3.6',
     install_requires=[
         'google-cloud-bigquery',
+        'google-cloud-run',
         'pyyaml',
         'jinja2',
         'click',
