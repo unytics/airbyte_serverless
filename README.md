@@ -20,7 +20,7 @@ AirbyteServerless is a simple tool to **manage Airbyte connectors**, run them **
 
 [Airbyte](https://airbyte.com/) is a must-have in your data-stack with its **catalog of open-source connectors to move your data from any source to your data-warehouse**.
 
-To manage these connectors, Airbyte offers **Airbyte-Open-Source-Platform** which includes a server, workers, database, UI, orchestrator, connectors, secret manager, logs manager, etc. 
+To manage these connectors, Airbyte offers **Airbyte-Open-Source-Platform** which includes a server, workers, database, UI, orchestrator, connectors, secret manager, logs manager, etc.
 
 AirbyteServerless aims at offering **a lightweight alternative** to Airbyte-Open-Source-Platform to simplify connectors management.
 
@@ -36,7 +36,7 @@ AirbyteServerless aims at offering **a lightweight alternative** to Airbyte-Open
 | **NOT Serverless**<br>- Can be deployed on a VM or Kubernetes Cluster.<br>- The platform is made of tens of dependent containers that you CANNOT deploy with serverless  | **Serverless**<br>- An Airbyte source docker image is upgraded with a destination connector<br>- The upgraded docker image can then be deployed as an isolated `Cloud Run Job` (or `Cloud Run Service`)<br>- Cloud Run is natively monitored with metrics, dashboards, logs, error reporting, alerting, etc<br>- It can be scheduled or triggered by events  |
 | **Is scalable with conditions**<br>Scalable if deployed on autoscaled Kubernetes Cluster and if you are skilled enough.<br>👉 **Check that you are skilled enough with Kubernetes by watching [this video](https://www.youtube.com/watch?v=9wvEwPLcLcA)** 😁. | **Is scalable**<br>Each connector is deployed independently of each other. You can have as many as you want. |
 
-<br> 
+<br>
 
 ## 💥 Getting Started with `abs` CLI
 
@@ -81,20 +81,16 @@ abs run my_first_connection
 You may not want to copy all the data that the source can get. To see all available `streams` run:
 
 ``` sh
-abs list-streams my_first_connection
+abs list-available-streams my_first_connection
 ```
 
-Run extract-load for only `stream1` and `stream2` with:
+If you want to configure your connection with only some of these streams, run:
 
 ``` sh
-abs run my_first_connection --streams="stream1,stream2"
+abs set-streams my_first_connection "stream1,stream2"
 ```
 
-If you want to persist the choice of these streams for all future extract-loads, run:
-
-``` sh
-abs set-config my_first_connection --streams="stream1,stream2"
-```
+Next `run` executions will extract selected streams only.
 
 
 ### Get help 📙
@@ -107,9 +103,13 @@ Options:
   --help  Show this message and exit.
 
 Commands:
-  deploy  Deploy BIGFUNCTION
-  doc     Generate, serve and publish documentation
-  test    Test BIGFUNCTION
+  create                  Create CONNECTION
+  list                    List created connections
+  list-available-streams  List available streams of CONNECTION
+  run                     Run CONNECTION Extract-Load Job
+  run-env-vars            Run Extract-Load Job configured by environment...
+  run-remotely            Run CONNECTION Extract-Load Job from remote
+  set-streams             Set STREAMS to retrieve for CONNECTION (STREAMS...
 ```
 
 
@@ -119,18 +119,17 @@ Commands:
 
 <br>
 
-## 👋 Contribute 
+## 👋 Contribute
 
 Any contribution is more than welcome 🤗!
 - Add a ⭐ on the repo to show your support
 - Raise an issue to raise a bug or suggest improvements
 - Open a PR! Below are some suggestions of work to be done:
-  - improve secrets management
-  - implement a CLI
-  - manage configurations as yaml files
+  - improve secrets management (use secret manager)
   - implement the `get_logs` method of `BigQueryDestination`
   - add a new destination connector (Cloud Storage?)
-  - add more serverless deployment examples.
+  - add more remote runners such compute instances.
+  - implements vpc access
   - implement optional post-processing (replace, upsert data at destination instead of append?)
 
 <br>
