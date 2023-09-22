@@ -113,14 +113,15 @@ class ConnectionFromFile(Connection):
             if filename.endswith('.yaml')
         ]
 
+
 class ConnectionFromEnvironementVariables(Connection):
 
     def __init__(self):
         executable = os.environ.get('AIRBYTE_ENTRYPOINT')
         yaml_config_b64 = os.environ.get('YAML_CONFIG')
         assert executable, 'AIRBYTE_ENTRYPOINT environment variable is not set'
-        assert yaml_config, 'YAML_CONFIG environment variable is not set'
-
-        self.yaml_config = base64.b64decode(yaml_config_b64.encode('utf-8')).decode('utf-8')
-
-        yaml.safe_load(self.yaml_config)
+        assert yaml_config_b64, 'YAML_CONFIG environment variable is not set'
+        yaml_config = base64.b64decode(yaml_config_b64.encode('utf-8')).decode('utf-8')
+        yaml_config = yaml.safe_load(yaml_config)
+        yaml_config['source']['executable'] = executable
+        self.yaml_config = yaml.dump(yaml_config)
