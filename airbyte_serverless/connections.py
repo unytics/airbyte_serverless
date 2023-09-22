@@ -1,4 +1,5 @@
 import os
+import re
 
 import yaml
 import jinja2
@@ -88,3 +89,6 @@ class Connection:
         deployer = Deployer(self)
         deployer.deploy_and_run()
 
+    def set_streams(self, streams):
+        assert streams, '`streams` variable must be defined'
+        self.yaml_config = re.sub(r'streams:[^#]*(#*.*)', f'streams: {streams} \g<1>', self.yaml_config)

@@ -26,7 +26,7 @@ class ExecutableAirbyteSource:
         yaml_definition_example = '\n'.join([
             f'executable: "{self.executable}" # GENERATED | string | Command to launch the Airbyte Source',
             'config: TO_REPLACE',
-            'streams: # OPTIONAL | array | List of streams to retrieve. If missing, all streams are retrieved from source.',
+            'streams: # OPTIONAL | string | Comma-separated list of streams to retrieve. If missing, all streams are retrieved from source.',
         ])
         spec = self.spec
         config_yaml = airbyte_utils.generate_connection_yaml_config_sample(spec)
@@ -152,7 +152,7 @@ class DockerAirbyteSource(ExecutableAirbyteSource):
         return re.sub(
             'executable:.*',
             (
-                f'docker_image: "{self.docker_image}" # GENERATED | string | A Public Docker Airbyte Source. Example: `airbyte/source-faker0.1.4`. (see connectors list at: "https://hub.docker.com/search?q=airbyte%2Fsource-" )\n' +
+                f'docker_image: "{self.docker_image}" # GENERATED | string | A Public Docker Airbyte Source. Example: `airbyte/source-faker:0.1.4`. (see connectors list at: "https://hub.docker.com/search?q=airbyte%2Fsource-" )\n' +
                 f'docker_entrypoint: "{docker_entrypoint}" # GENERATED | string | Command executed inside the docker container to run the Airbyte Connector. Used for serverless deployment'
             ),
             yaml_definition_example

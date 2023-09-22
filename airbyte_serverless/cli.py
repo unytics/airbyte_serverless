@@ -84,12 +84,25 @@ def list():
 @cli.command()
 @click.argument('connection')
 @handle_error
-def list_streams(connection):
+def list_available_streams(connection):
     '''
     List available streams of CONNECTION
     '''
     connection = Connection(connection)
-    print_success(connection.source.available_streams)
+    print_success(','.join(connection.source.available_streams))
+
+
+@cli.command()
+@click.argument('connection')
+@click.argument('streams')
+@handle_error
+def set_streams(connection, streams):
+    '''
+    Set STREAMS to retrieve for CONNECTION (STREAMS is a comma-separated list of streams given by `list-available-streams` command)
+    '''
+    connection = Connection(connection)
+    connection.set_streams(streams)
+    print_success(f'Successfully set streams {streams} of connection {connection.name}')
 
 
 @cli.command()
