@@ -7,7 +7,7 @@ import click
 from click_help_colors import HelpColorsGroup
 
 from .sources import AirbyteSourceException
-from .connections import Connection, list_connections
+from .connections import ConnectionFromFile
 
 
 
@@ -65,8 +65,8 @@ def create(connection, source, destination, deployer):
     '''
     Create CONNECTION
     '''
-    connection = Connection(connection)
-    connection.init(source, destination, deployer)
+    connection = ConnectionFromFile(connection)
+    connection.init_yaml_config(source, destination, deployer)
     print_success(f'Created connection `{connection.name}` with source `{source}` and destination `{destination}` and deployer `{deployer}`')
 
 
@@ -78,7 +78,7 @@ def list():
     '''
     print_success(
         'Configured Connections are:\n' +
-        '\n'.join([f'- {connection}' for connection in list_connections() or ['NONE']])
+        '\n'.join([f'- {connection}' for connection in ConnectionFromFile.list_connections() or ['NONE']])
     )
 
 @cli.command()
@@ -88,7 +88,7 @@ def list_available_streams(connection):
     '''
     List available streams of CONNECTION
     '''
-    connection = Connection(connection)
+    connection = ConnectionFromFile(connection)
     print_success(','.join(connection.source.available_streams))
 
 
@@ -100,22 +100,34 @@ def set_streams(connection, streams):
     '''
     Set STREAMS to retrieve for CONNECTION (STREAMS is a comma-separated list of streams given by `list-available-streams` command)
     '''
-    connection = Connection(connection)
+    connection = ConnectionFromFile(connection)
     connection.set_streams(streams)
     print_success(f'Successfully set streams {streams} of connection {connection.name}')
 
 
 @cli.command()
 @click.argument('connection')
-@click.option('--from-deployed-docker-image', is_flag=True, default=False, help="Set this flag only in a deployed docker image")
 @handle_error
 def run(connection, from_deployed_docker_image):
     '''
     Run Extract-Load for CONNECTION
     '''
-    connection = Connection(connection, is_deployed=from_deployed_docker_image)
+    connection = ConnectionFromFile(connection)
     connection.run()
     print_success('OK')
+
+
+@cli.command()
+@click.argument('connection')
+@handle_error
+def run(connection, from_deployed_docker_image):
+    '''
+    Run Extract-Load for CONNECTION
+    '''
+    connection = ConnectionFromFile(connection)
+    connection.run()
+    print_success('OK')
+
 
 
 @cli.command()
@@ -125,6 +137,6 @@ def deploy(connection):
     '''
     Deploy CONNECTION
     '''
-    connection = Connection(connection)
+    connection = ConnectionFromFile(connection)
     connection.deploy()
     print_success('OK')
