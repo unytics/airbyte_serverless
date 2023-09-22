@@ -51,17 +51,18 @@ pip install airbyte-serverless
 ### Create your first Connection 👨‍💻
 
 ``` sh
-abs create my_first_connection --source="airbyte/source-faker:0.1.4" --destination="bigquery:my_project.my_dataset"
+abs create my_first_connection --source="airbyte/source-faker:0.1.4" --destination="bigquery:my_project.my_dataset" --remote-runner "cloud_run_job"
 ```
 
 > 1. Docker is required. Make sure you have it installed.
 > 2. `source` param can be any Public Docker Airbyte Source ([here](https://hub.docker.com/search?q=airbyte%2Fsource-) is the list). We recomend that you use faker source to get started.
-> 4. `destination` param must be one of the following:
->     - `print`
->     - `bigquery:my_project.my_dataset` with `my_project` a GCP project where you can run BigQuery queries and `my_dataset` a BigQuery dataset where you have `dataEditor` permission.
+> 3. `destination` param must be one of the following:
+>     - `print` (default value if not set)
+>     - `bigquery`
 >     - *contributions are welcome to offer more destinations* 🤗
-> 6. The command will create a configuration file `./connections/my_first_connection.yaml` with initialized configuration.
-> 8. Update this configuration file to suit your needs.
+> 4. `remote-runner` param must be `cloud_run_job`. More integrations will come in the future. This remote-runner is only used if you want to run the connection on a remote runner and schedule it.
+> 5. The command will create a configuration file `./connections/my_first_connection.yaml` with initialized configuration.
+> 6. Update this configuration file to suit your needs.
 
 
 ### Run it! ⚡
@@ -70,8 +71,11 @@ abs create my_first_connection --source="airbyte/source-faker:0.1.4" --destinati
 abs run my_first_connection
 ```
 
-> 1. The `run`commmand will only work if you have correctly edited `./connections/my_first_connection.yaml` configuration file.
-> 2. If you chose `bigquery` destination, you must have `gcloud` installed on your machine with default credentials initialized with the command `gcloud auth application-default login`
+> 1. This will launch an Extract-Load Job from the source to the destination.
+> 2. The `run` commmand will only work if you have correctly edited `./connections/my_first_connection.yaml` configuration file.
+> 3. If you chose `bigquery` destination, you must:
+>    + have `gcloud` installed on your machine with default credentials initialized with the command `gcloud auth application-default login`.
+>    + have correctly edited the `destination` section of `./connections/my_first_connection.yaml` configuration file. You must have `dataEditor` permission on the chosen BigQuery dataset.
 > 4. Data is always appended at destination (not replaced nor upserted). It will be in raw format.
 > 5. If the connector supports incremental extract (extract only new or recently modified data) then this mode is chosen.
 
@@ -93,6 +97,27 @@ abs set-streams my_first_connection "stream1,stream2"
 Next `run` executions will extract selected streams only.
 
 
+### Run from the Remote Runner 🚀
+
+``` sh
+abs remote-run my_first_connection
+```
+> 2. The `remote-run` commmand will only work if you have correctly edited `./connections/my_first_connection.yaml` configuration file including the `remote_runner` part.
+
+> 1. This command will launch an Extract-Load Job like the `abs run` command. The main difference is that the command will be run on a remote deployed container (we use Cloud Run Job as the only container runner for now).
+> 3. If you chose `bigquery` destination, the selected service account must be `bigquery.dataEditor` on the target dataset and have permission to create some BigQuery jobs in the project.
+
+
+### Schedule the run from the Remote Runner ⏱️
+
+``` sh
+abs schedule-remote-run my_first_connection "0 * * * *"
+```
+
+> ⚠️ THIS IS NOT IMPLEMENTED YET
+
+
+
 ### Get help 📙
 
 ``` sh
@@ -106,16 +131,13 @@ Commands:
   create                  Create CONNECTION
   list                    List created connections
   list-available-streams  List available streams of CONNECTION
+  remote-run              Run CONNECTION Extract-Load Job from remote runner
   run                     Run CONNECTION Extract-Load Job
   run-env-vars            Run Extract-Load Job configured by environment...
-  run-remotely            Run CONNECTION Extract-Load Job from remote
   set-streams             Set STREAMS to retrieve for CONNECTION (STREAMS...
 ```
 
 
-### Deploy 🚀
-
-...
 
 <br>
 
@@ -125,6 +147,7 @@ Any contribution is more than welcome 🤗!
 - Add a ⭐ on the repo to show your support
 - Raise an issue to raise a bug or suggest improvements
 - Open a PR! Below are some suggestions of work to be done:
+  - implements a scheduler
   - improve secrets management (use secret manager)
   - implement the `get_logs` method of `BigQueryDestination`
   - add a new destination connector (Cloud Storage?)

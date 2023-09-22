@@ -69,7 +69,7 @@ class Connection:
     def run(self):
         Runner('direct', self).run()
 
-    def run_remotely(self):
+    def remote_run(self):
         self.remote_runner.run()
 
 

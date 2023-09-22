@@ -59,7 +59,7 @@ def handle_error(f):
 @click.argument('connection')
 @click.option('--source', default='airbyte/source-faker:0.1.4', help='Any Public Docker Airbyte Source. Example: `airbyte/source-faker:0.1.4`. (see connectors list at: "https://hub.docker.com/search?q=airbyte%2Fsource-" )')
 @click.option('--destination', default='print', help='One of `print` or `bigquery`')
-@click.option('--remote-runner', default='cloud_run_job', help='One of `local_docker` or `cloud_run_job`')
+@click.option('--remote-runner', default='cloud_run_job', help='`cloud_run_job` is the only valid option for now')
 @handle_error
 def create(connection, source, destination, remote_runner):
     '''
@@ -120,12 +120,12 @@ def run(connection):
 @cli.command()
 @click.argument('connection')
 @handle_error
-def run_remotely(connection):
+def remote_run(connection):
     '''
-    Run CONNECTION Extract-Load Job from remote
+    Run CONNECTION Extract-Load Job from remote runner
     '''
     connection = ConnectionFromFile(connection)
-    connection.run_remotely()
+    connection.remote_run()
     print_success('OK')
 
 
