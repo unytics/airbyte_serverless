@@ -47,6 +47,10 @@ class Connection:
     def config(self):
         return yaml.safe_load(self.yaml_config) or {}
 
+    def set_streams(self, streams):
+        assert streams, '`streams` variable must be defined'
+        self.yaml_config = re.sub(r'streams:[^#]*(#*.*)', f'streams: {streams} \g<1>', self.yaml_config)
+
     @property
     def source(self):
         source_config = self.config.get('source')
@@ -64,16 +68,19 @@ class Connection:
         messages = self.source.extract(state=state)
         self.destination.load(messages)
 
+    def deploy(self):
+        deployer = Deployer(self)
+        deployer.deploy_and_run()
+
 
 
 class ConnectionFromFile(Connection):
     '''
     A `ConnectionFromFile` extends a `Connection` with
-    `yaml_config` stored in a configuration file instead of provided variable
+    `yaml_config` stored in a configuration file instead of in a variable
     '''
 
     CONNECTIONS_FOLDER = 'connections'
-
 
     def __init__(self, name):
         self.name = name
@@ -98,14 +105,6 @@ class ConnectionFromFile(Connection):
         os.makedirs(self.CONNECTIONS_FOLDER, exist_ok=True)
         return open(self.config_filename, 'w', encoding='utf-8').write(yaml_config)
 
-    def deploy(self):
-        deployer = Deployer(self)
-        deployer.deploy_and_run()
-
-    def set_streams(self, streams):
-        assert streams, '`streams` variable must be defined'
-        self.yaml_config = re.sub(r'streams:[^#]*(#*.*)', f'streams: {streams} \g<1>', self.yaml_config)
-
     @classmethod
     def list_connections(cls):
         return [
@@ -119,8 +118,8 @@ class ConnectionFromEnvironementVariables(Connection):
     def __init__(self):
         executable = os.environ.get('AIRBYTE_ENTRYPOINT')
         yaml_config_b64 = os.environ.get('YAML_CONFIG')
-        assert executable, 'AIRBYTE_ENTRYPOINT environment variable is not defined'
-        assert yaml_config, 'YAML_CONFIG environment variable is not defined'
+        assert executable, 'AIRBYTE_ENTRYPOINT environment variable is not set'
+        assert yaml_config, 'YAML_CONFIG environment variable is not set'
 
         self.yaml_config = base64.b64decode(yaml_config_b64.encode('utf-8')).decode('utf-8')
 

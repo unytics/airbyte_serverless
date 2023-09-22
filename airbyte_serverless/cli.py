@@ -7,7 +7,7 @@ import click
 from click_help_colors import HelpColorsGroup
 
 from .sources import AirbyteSourceException
-from .connections import ConnectionFromFile
+from .connections import ConnectionFromFile, ConnectionFromEnvironementVariables
 
 
 
@@ -108,7 +108,7 @@ def set_streams(connection, streams):
 @cli.command()
 @click.argument('connection')
 @handle_error
-def run(connection, from_deployed_docker_image):
+def run(connection):
     '''
     Run Extract-Load for CONNECTION
     '''
@@ -118,16 +118,15 @@ def run(connection, from_deployed_docker_image):
 
 
 @cli.command()
-@click.argument('connection')
 @handle_error
-def run(connection, from_deployed_docker_image):
+def run_from_environment():
     '''
-    Run Extract-Load for CONNECTION
+    Run Extract-Load for CONNECTION defined by AIRBYTE_ENTRYPOINT 
+    and AIRBYTE_CONFIG environment variables
     '''
-    connection = ConnectionFromFile(connection)
+    connection = ConnectionFromEnvironementVariables()
     connection.run()
     print_success('OK')
-
 
 
 @cli.command()
