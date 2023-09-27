@@ -10,7 +10,6 @@ from .destinations import Destination
 from .runners import Runner
 
 
-
 CONNECTION_CONFIG_TEMPLATE = jinja2.Template('''
 source:
   {{ source.yaml_definition_example | indent(2, False) }}
@@ -45,7 +44,9 @@ class Connection:
 
     @property
     def config(self):
-        return yaml.safe_load(self.yaml_config) or {}
+        yaml_config = self.yaml_config
+        assert yaml_config, 'connection `yaml_config` does not exist. Please re-create connection'
+        return yaml.safe_load(yaml_config)
 
     def set_streams(self, streams):
         assert streams, '`streams` variable must be defined'
@@ -53,17 +54,14 @@ class Connection:
 
     @property
     def source(self):
-        assert self.config, 'connection config does not exist. Please re-create connection'
         return Source(**self.config['source'])
 
     @property
     def destination(self):
-        assert self.config, 'connection config does not exist. Please re-create connection'
         return Destination(**self.config['destination'])
 
     @property
     def remote_runner(self):
-        assert self.config, 'connection config does not exist. Please re-create connection'
         return Runner(self.config['remote_runner']['type'], self)
 
     def run(self):
@@ -87,7 +85,7 @@ class ConnectionFromFile(Connection):
         self.config_filename = f'{self.CONNECTIONS_FOLDER}/{self.name}.yaml'
 
     def init_yaml_config(self, source, destination, remote_runner):
-        assert not self.config, (
+        assert not self.yaml_config, (
             f'Connection `{self.name}` already exists. '
             f'If you want to re-init it, delete the file `{self.config_filename}`'
             ' and run this command again'
