@@ -40,7 +40,7 @@ class CloudRunJobRunner(BaseRunner):
         yaml_config_b64 = base64.b64encode(self.connection.yaml_config.encode('utf-8')).decode('utf-8')
 
         location = f"projects/{project}/locations/{region}"
-        job_id = f'abs-{self.connection.name}'.lower()
+        job_id = f'abs-{self.connection.name}'.lower().replace('_', '-')
         job_name = f'{location}/jobs/{job_id}'
 
         container = {
