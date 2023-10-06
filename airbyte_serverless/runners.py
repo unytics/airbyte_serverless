@@ -46,7 +46,7 @@ class CloudRunJobRunner(BaseRunner):
         container = {
             "image": docker_image,
             "command": ["/bin/sh"],
-            "args": ['-c', 'pip install airbyte-serverless && abs run-from-environment'],
+            "args": ['-c', 'pip install airbyte-serverless && abs run-env-vars'],
             "env": [{"name": "YAML_CONFIG", "value": yaml_config_b64}],
             "resources": {
                 "limits": {
