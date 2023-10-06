@@ -51,7 +51,7 @@ pip install airbyte-serverless
 ### Create your first Connection 👨‍💻
 
 ``` sh
-abs create my_first_connection --source="airbyte/source-faker:0.1.4" --destination="bigquery:my_project.my_dataset" --remote-runner "cloud_run_job"
+abs create my_first_connection --source="airbyte/source-faker:0.1.4" --destination="bigquery" --remote-runner "cloud_run_job"
 ```
 
 > 1. Docker is required. Make sure you have it installed.
