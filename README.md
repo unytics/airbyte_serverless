@@ -142,7 +142,7 @@ Commands:
 
 ## Keep in touch 🧑‍💻
 
-[Join our Slack](https://join.slack.com/t/unytics/shared_invite/zt-1gbv491mu-cs03EJbQ1fsHdQMcFN7E1Q) for any question, to get help for getting started, to speak about a bug, to suggest improvements
+[Join our Slack](https://join.slack.com/t/unytics/shared_invite/zt-1gbv491mu-cs03EJbQ1fsHdQMcFN7E1Q) for any question, to get help for getting started, to speak about a bug, to suggest improvements, or simply if you want to chat 🙂.
 
 <br>
 
