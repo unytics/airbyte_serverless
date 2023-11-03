@@ -119,12 +119,18 @@ def run(connection):
 
 @cli.command()
 @click.argument('connection')
+@click.option('--env', '-e', multiple=True, help='Environment variables in the format KEY=VALUE')
 @handle_error
-def remote_run(connection):
+def remote_run(connection, env):
     '''
     Run CONNECTION Extract-Load Job from remote runner
     '''
     connection = ConnectionFromFile(connection)
+
+    env_vars = dict(item.split("=") for item in env)
+
+    connection.set_environment_variables(env_vars)
+
     connection.remote_run()
     print_success('OK')
 

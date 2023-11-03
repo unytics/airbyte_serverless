@@ -70,6 +70,8 @@ class Connection:
     def remote_run(self):
         self.remote_runner.run()
 
+    def set_environment_variables(self, env_vars):
+        self.environment_variables = env_vars
 
 
 class ConnectionFromFile(Connection):

@@ -27,6 +27,13 @@ class CloudRunJobRunner(BaseRunner):
         'service_account: "" # OPTIONAL | string | Service account email used bu Cloud Run Job. If empty default compute service account will be used',
     ])
 
+    @staticmethod
+    def get_all_env_vars(yaml_config, external_env_vars_dict):
+        env_vars = [{"name": "YAML_CONFIG", "value": yaml_config}]
+        for key, value in external_env_vars_dict.items():
+            env_vars.append({"name": key, "value": value})
+        return env_vars
+
     def run(self):
         import google.cloud.run_v2
         import google.api_core.exceptions
@@ -43,14 +50,13 @@ class CloudRunJobRunner(BaseRunner):
         job_id = f'abs-{self.connection.name}'.lower().replace('_', '-')
         job_name = f'{location}/jobs/{job_id}'
 
+        env_vars = self.get_all_env_vars(yaml_config_b64, self.connection.environment_variables)
+
         container = {
             "image": docker_image,
             "command": ["/bin/sh"],
             "args": ['-c', 'pip install airbyte-serverless && abs run-env-vars'],
-            "env": [{"name": "YAML_CONFIG", "value": yaml_config_b64},
-                   {"name": "BATCH_INDEX_START", "value": "1"},
-                   {"name": "BATCH_INDEX_END", "value": "4"}
-                    ],
+            "env": env_vars,
             "resources": {
                 "limits": {
                     "memory": '512Mi',
