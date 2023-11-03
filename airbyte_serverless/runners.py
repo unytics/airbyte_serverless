@@ -47,7 +47,10 @@ class CloudRunJobRunner(BaseRunner):
             "image": docker_image,
             "command": ["/bin/sh"],
             "args": ['-c', 'pip install airbyte-serverless && abs run-env-vars'],
-            "env": [{"name": "YAML_CONFIG", "value": yaml_config_b64}],
+            "env": [{"name": "YAML_CONFIG", "value": yaml_config_b64},
+                   {"name": "BATCH_INDEX_START", "value": "1"},
+                   {"name": "BATCH_INDEX_END", "value": "4"}
+                    ],
             "resources": {
                 "limits": {
                     "memory": '512Mi',
@@ -99,3 +102,5 @@ class Runner:
 
     def __getattr__(self, name):
         return getattr(self.runner, name)
+
+
