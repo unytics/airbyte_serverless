@@ -89,7 +89,7 @@ def list_available_streams(connection):
     List available streams of CONNECTION
     '''
     connection = ConnectionFromFile(connection)
-    print_success(','.join(connection.source.available_streams))
+    print_success(','.join(connection.available_streams))
 
 
 @cli.command()

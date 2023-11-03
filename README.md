@@ -51,7 +51,7 @@ pip install airbyte-serverless
 ### Create your first Connection 👨‍💻
 
 ``` sh
-abs create my_first_connection --source="airbyte/source-faker:0.1.4" --destination="bigquery:my_project.my_dataset" --remote-runner "cloud_run_job"
+abs create my_first_connection --source="airbyte/source-faker:0.1.4" --destination="bigquery" --remote-runner "cloud_run_job"
 ```
 
 > 1. Docker is required. Make sure you have it installed.
@@ -137,14 +137,22 @@ Commands:
   set-streams             Set STREAMS to retrieve for CONNECTION (STREAMS...
 ```
 
+<br>
 
+
+## Keep in touch 🧑‍💻
+
+[Join our Slack](https://join.slack.com/t/unytics/shared_invite/zt-1gbv491mu-cs03EJbQ1fsHdQMcFN7E1Q) for any question, to get help for getting started, to speak about a bug, to suggest improvements, or simply if you want to have a chat 🙂.
 
 <br>
+
+
 
 ## 👋 Contribute
 
 Any contribution is more than welcome 🤗!
 - Add a ⭐ on the repo to show your support
+- [Join our Slack](https://join.slack.com/t/unytics/shared_invite/zt-1gbv491mu-cs03EJbQ1fsHdQMcFN7E1Q) and talk with us
 - Raise an issue to raise a bug or suggest improvements
 - Open a PR! Below are some suggestions of work to be done:
   - implements a scheduler

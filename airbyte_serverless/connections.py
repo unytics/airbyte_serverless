@@ -29,7 +29,7 @@ class Connection:
     - has a `run` method to perform extract-load from `source` to `destination`
     '''
 
-    def __init__(self, yaml_config):
+    def __init__(self, yaml_config=None):
         self.yaml_config = yaml_config
 
     def init_yaml_config(self, source, destination, remote_runner):
@@ -47,6 +47,10 @@ class Connection:
         yaml_config = self.yaml_config
         assert yaml_config, 'connection `yaml_config` does not exist. Please re-create connection'
         return yaml.safe_load(yaml_config)
+
+    @property
+    def available_streams(self):
+        return self.source.available_streams
 
     def set_streams(self, streams):
         assert streams, '`streams` variable must be defined'

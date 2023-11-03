@@ -13,10 +13,10 @@ class AirbyteSourceException(Exception):
 
 class ExecutableAirbyteSource:
 
-    def __init__(self, executable=None, config=None, streams='*'):
+    def __init__(self, executable=None, config=None, streams=None):
         self.executable = executable
         self.config = config
-        self.streams = streams
+        self.streams = [stream.strip() for stream in streams.split(',')] if isinstance(streams, str) else streams
         self.temp_dir_obj = tempfile.TemporaryDirectory()  # Used to dump config as files used by airbyte connector
         self.temp_dir = self.temp_dir_obj.name
         self.temp_dir_for_executable = self.temp_dir  # May be different if executable is a docker image where temp dir is mounted elsewhere
@@ -108,7 +108,7 @@ class ExecutableAirbyteSource:
                 "cursor_field": stream.get('default_cursor_field', [])
             }
             for stream in configured_catalog['streams']
-            if not self.streams or stream in self.streams
+            if not self.streams or stream['name'] in self.streams
         ]
         return configured_catalog
 
