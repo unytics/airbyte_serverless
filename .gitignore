@@ -5,3 +5,4 @@ connections/
 TODO.md
 venv/
 build/
+.idea/

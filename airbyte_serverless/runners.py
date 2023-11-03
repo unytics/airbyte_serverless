@@ -40,14 +40,17 @@ class CloudRunJobRunner(BaseRunner):
         yaml_config_b64 = base64.b64encode(self.connection.yaml_config.encode('utf-8')).decode('utf-8')
 
         location = f"projects/{project}/locations/{region}"
-        job_id = f'abs-{self.connection.name}'.lower()
+        job_id = f'abs-{self.connection.name}'.lower().replace('_', '-')
         job_name = f'{location}/jobs/{job_id}'
 
         container = {
             "image": docker_image,
             "command": ["/bin/sh"],
-            "args": ['-c', 'pip install airbyte-serverless && abs run-from-environment'],
-            "env": [{"name": "YAML_CONFIG", "value": yaml_config_b64}],
+            "args": ['-c', 'pip install airbyte-serverless && abs run-env-vars'],
+            "env": [{"name": "YAML_CONFIG", "value": yaml_config_b64},
+                   {"name": "BATCH_INDEX_START", "value": "1"},
+                   {"name": "BATCH_INDEX_END", "value": "4"}
+                    ],
             "resources": {
                 "limits": {
                     "memory": '512Mi',
@@ -99,3 +102,5 @@ class Runner:
 
     def __getattr__(self, name):
         return getattr(self.runner, name)
+
+
