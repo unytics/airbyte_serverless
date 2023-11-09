@@ -25,7 +25,7 @@ class CloudRunJobRunner(BaseRunner):
         'project:  # REQUIRED | string | GCP Project where cloud run job will be deployed',
         'region: "europe-west1" # REQUIRED | string | Region where cloud run job will be deployed',
         'service_account: "" # OPTIONAL | string | Service account email used bu Cloud Run Job. If empty default compute service account will be used',
-        'env_vars: "" # OPTIONAL | dict | Environements Variables',
+        'env_vars:  # OPTIONAL | dict | Environements Variables',
     ])
 
     def run(self):
