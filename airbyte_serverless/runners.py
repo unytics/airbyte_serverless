@@ -25,6 +25,7 @@ class CloudRunJobRunner(BaseRunner):
         'project:  # REQUIRED | string | GCP Project where cloud run job will be deployed',
         'region: "europe-west1" # REQUIRED | string | Region where cloud run job will be deployed',
         'service_account: "" # OPTIONAL | string | Service account email used bu Cloud Run Job. If empty default compute service account will be used',
+        'env_vars:  # OPTIONAL | dict | Environements Variables',
     ])
 
     def run(self):
@@ -37,6 +38,11 @@ class CloudRunJobRunner(BaseRunner):
         project = runner_config['project']
         region = runner_config['region']
         service_account = runner_config.get('service_account')
+        env_vars = runner_config.get('env_vars')
+        env = []
+        if env_vars:
+            assert isinstance(env_vars, dict), "Given env_vars argument should be a dict"
+            env = [{'name': k, 'value': v} for k, v in env_vars.items()]
         yaml_config_b64 = base64.b64encode(self.connection.yaml_config.encode('utf-8')).decode('utf-8')
 
         location = f"projects/{project}/locations/{region}"
@@ -47,7 +53,7 @@ class CloudRunJobRunner(BaseRunner):
             "image": docker_image,
             "command": ["/bin/sh"],
             "args": ['-c', 'pip install airbyte-serverless && abs run-env-vars'],
-            "env": [{"name": "YAML_CONFIG", "value": yaml_config_b64}],
+            "env": [{"name": "YAML_CONFIG", "value": yaml_config_b64}] + env,
             "resources": {
                 "limits": {
                     "memory": '512Mi',
