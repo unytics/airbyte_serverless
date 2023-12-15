@@ -14,6 +14,10 @@
 
 AirbyteServerless is a simple tool to **manage Airbyte connectors**, run them **locally** or deploy them in **serverless** mode.
 
+![logo](https://raw.githubusercontent.com/unytics/airbyte_serverless/main/airbyte_serverless.gif)
+
+
+
 <br>
 
 ## 💡  Why AirbyteServerless?
