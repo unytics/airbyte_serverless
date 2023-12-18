@@ -162,6 +162,7 @@ Any contribution is more than welcome 🤗!
   - implements a scheduler
   - improve secrets management (use secret manager)
   - implement the `get_logs` method of `BigQueryDestination`
+  - enable updating cloud run job instead of deleting/creating when it already exists
   - add a new destination connector (Cloud Storage?)
   - add more remote runners such compute instances.
   - implements vpc access
