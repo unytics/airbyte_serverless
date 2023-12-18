@@ -101,6 +101,28 @@ abs set-streams my_first_connection "stream1,stream2"
 Next `run` executions will extract selected streams only.
 
 
+### Handle Secrets 🔒
+
+For security reasons, you do NOT want to store secrets such as api tokens in your yaml files. Instead, add your secrets in Google Secret Manager by following [this documentation](https://cloud.google.com/secret-manager/docs/create-secret-quickstart). Then you can add the secret resource name in the yaml file such as below:
+
+```yaml
+source:
+  docker_image: "..."
+  config:
+    api_token: GCP_SECRET({SECRET_RESOURCE_NAME})
+```
+
+Replace `{SECRET_RESOURCE_NAME}` by your secret resource name which must have the format: `projects/{PROJECT_ID}/secrets/{SECRET_ID}/versions/{SECRET_VERSION}`. To get this path:
+
+1. Go to the [Secret Manager page](https://console.cloud.google.com/security/secret-manager) in the Google Cloud console.
+2. Go to the Secret Manager page
+3. On the Secret Manager page, click on the Name of a secret.
+4. On the Secret details page, in the Versions table, locate a secret version to access.
+5. In the Actions column, click on the three dots.
+6. Click on 'Copy Resource Name' from the menu.
+
+
+
 ### Run from the Remote Runner 🚀
 
 ``` sh
@@ -109,7 +131,8 @@ abs remote-run my_first_connection
 > 2. The `remote-run` commmand will only work if you have correctly edited `./connections/my_first_connection.yaml` configuration file including the `remote_runner` part.
 
 > 1. This command will launch an Extract-Load Job like the `abs run` command. The main difference is that the command will be run on a remote deployed container (we use Cloud Run Job as the only container runner for now).
-> 3. If you chose `bigquery` destination, the selected service account must be `bigquery.dataEditor` on the target dataset and have permission to create some BigQuery jobs in the project.
+> 3. If you chose `bigquery` destination, the service account you put in `service_account` field of `remote_runner` section of the yaml must be `bigquery.dataEditor` on the target dataset and have permission to create some BigQuery jobs in the project.
+> 4. If your yaml config contains some Google Secrets, the service account you put in `service_account` field of `remote_runner` section of the yaml must has read access to the secrets.
 
 
 ### Schedule the run from the Remote Runner ⏱️
