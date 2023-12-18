@@ -114,12 +114,12 @@ source:
 
 Replace `{SECRET_RESOURCE_NAME}` by your secret resource name which must have the format: `projects/{PROJECT_ID}/secrets/{SECRET_ID}/versions/{SECRET_VERSION}`. To get this path:
 
-1. Go to the [Secret Manager page](https://console.cloud.google.com/security/secret-manager) in the Google Cloud console.
-2. Go to the Secret Manager page
-3. On the Secret Manager page, click on the Name of a secret.
-4. On the Secret details page, in the Versions table, locate a secret version to access.
-5. In the Actions column, click on the three dots.
-6. Click on 'Copy Resource Name' from the menu.
+> 1. Go to the [Secret Manager page](https://console.cloud.google.com/security/secret-manager) in the Google Cloud console.
+> 2. Go to the Secret Manager page
+> 3. On the Secret Manager page, click on the Name of a secret.
+> 4. On the Secret details page, in the Versions table, locate a secret version to access.
+> 5. In the Actions column, click on the three dots.
+> 6. Click on 'Copy Resource Name' from the menu.
 
 
 
