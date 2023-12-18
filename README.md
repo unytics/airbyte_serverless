@@ -183,7 +183,6 @@ Any contribution is more than welcome 🤗!
 - Raise an issue to raise a bug or suggest improvements
 - Open a PR! Below are some suggestions of work to be done:
   - implements a scheduler
-  - improve secrets management (use secret manager)
   - implement the `get_logs` method of `BigQueryDestination`
   - enable updating cloud run job instead of deleting/creating when it already exists
   - add a new destination connector (Cloud Storage?)
