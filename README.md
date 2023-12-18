@@ -132,7 +132,7 @@ abs remote-run my_first_connection
 
 > 1. This command will launch an Extract-Load Job like the `abs run` command. The main difference is that the command will be run on a remote deployed container (we use Cloud Run Job as the only container runner for now).
 > 3. If you chose `bigquery` destination, the service account you put in `service_account` field of `remote_runner` section of the yaml must be `bigquery.dataEditor` on the target dataset and have permission to create some BigQuery jobs in the project.
-> 4. If your yaml config contains some Google Secrets, the service account you put in `service_account` field of `remote_runner` section of the yaml must has read access to the secrets.
+> 4. If your yaml config contains some Google Secrets, the service account you put in `service_account` field of `remote_runner` section of the yaml must have read access to the secrets.
 
 
 ### Schedule the run from the Remote Runner ⏱️
