@@ -22,6 +22,24 @@ remote_runner:
 ''')
 
 
+SECRETS = {}
+
+
+def replace_secrets(yaml_config):
+    google_secrets = re.findall(r'GCP_SECRET\([^\)]*\)', yaml_config)
+    if google_secrets:
+        import google.cloud.secretmanager
+        secret_manager = google.cloud.secretmanager.SecretManagerServiceClient()
+        for google_secret in google_secrets:
+            if google_secret not in SECRETS:
+                secret_name = google_secret.replace('GCP_SECRET(', '').replace(')', '').replace('"', '').replace("'", '')
+                secret = secret_manager.access_secret_version(name=secret_name)
+                secret = secret.payload.data.decode('UTF-8')
+                SECRETS[google_secret] = secret
+            yaml_config = yaml_config.replace(google_secret, SECRETS[google_secret])
+    return yaml_config
+
+
 class Connection:
     '''
     A `Connection` instance:
@@ -45,6 +63,7 @@ class Connection:
     @property
     def config(self):
         yaml_config = self.yaml_config
+        yaml_config = replace_secrets(yaml_config)
         assert yaml_config, 'connection `yaml_config` does not exist. Please re-create connection'
         return yaml.safe_load(yaml_config)
 

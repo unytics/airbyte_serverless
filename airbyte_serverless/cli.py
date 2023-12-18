@@ -6,6 +6,8 @@ import shutil
 import click
 from click_help_colors import HelpColorsGroup
 
+import google.api_core.exceptions
+
 from .sources import AirbyteSourceException
 from .connections import ConnectionFromFile, ConnectionFromEnvironementVariables
 
@@ -44,6 +46,12 @@ def handle_error(f):
             return f(*args, **kwargs)
         except (AssertionError, AirbyteSourceException) as e:
             click.echo(click.style(f'ERROR: {e}', fg='red'))
+            sys.exit()
+        except google.api_core.exceptions.PermissionDenied as e:
+            click.echo(click.style(f'ERROR: PERMISSION DENIED: {e}', fg='red'))
+            sys.exit()
+        except google.api_core.exceptions.NotFound as e:
+            click.echo(click.style(f'ERROR: NOT FOUND: {e}', fg='red'))
             sys.exit()
         except Exception as e:
             click.echo(click.style(f'ERROR: {e}', fg='red'))

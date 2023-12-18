@@ -27,6 +27,7 @@ setuptools.setup(
     install_requires=[
         'google-cloud-bigquery',
         'google-cloud-run',
+        'google-cloud-secret-manager',
         'pyyaml',
         'jinja2',
         'click',
