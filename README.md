@@ -185,19 +185,23 @@ Commands:
 <details>
   <summary><b>Is it easy to migrate from/to Airbyte ↔ AirbyteServerless?</b></summary>
 
+  <br>
   > 1. AirbyteServerless uses Airbyte source connectors. Then, the same config is used. If it works on AirbyteServerless, it will work on Airbyte. The reverse may be sometimes a bit harder if for some sources you created credentials using oauth2 (with a pop-up window from the source opened by Airbyte UI). Indeed, Airbyte may not give you a way to read these created credentials.
   > 2. Airbyte jobs have two steps: extract-load of raw data and optional transform (transform can be replace, upsert, basic normalization). The extract-load of raw data is exactly the same but AirbyteServerless does not do transform. It only appends raw data at the destination. This is for purpose as AirbyteServerless was made to do only one thing and do it well and we believe it makes it resilient to schema changes. Then,
   >     - if you create your transforms from raw data on dbt, you will be able to migrate from AirbyteServerless to Airbyte and vice-versa and still use your transforms.
   >     - if you use Airbyte and rely on Airbyte transforms, you will need to re-create them in dbt if you switch to AirbyteServerless
   > 3. When migrating from/to Airbyte Cloud ↔ Airbyte OSS self-deployed ↔ AirbyteServerless, you won't be able to copy the state (which stores where incremental jobs stop). Then you will need to make a full refresh.
+  <br>
 </details>
 
 <details>
   <summary><b>Why cannot we use usual Airbyte destination connectors on AirbyteServerless?</b></summary>
 
+  <br>
   > Airbyte-Serverless destination connectors are indeed specific to AirbyteServerless and can NOT be the ones from Airbyte. This is because, in AirbyteServerless, destination connectors manage the states and logs while in Airbyte this is handled by the platform. Thanks to this, we don't need a database 🥳!,
   >
   > This being said, AirbyteServerless destination connectors are very light. You'll find [here](https://github.com/unytics/airbyte_serverless/blob/main/airbyte_serverless/destinations.py#L105) that the BigQuery destination connector is only 50 lines of code.
+  <br>
 </details>
 
 
