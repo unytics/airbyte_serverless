@@ -135,7 +135,7 @@ abs remote-run my_first_connection
 > 4. If your yaml config contains some Google Secrets, the service account you put in `service_account` field of `remote_runner` section of the yaml must have read access to the secrets.
 
 
-### Use your own Airbyte Source docker image 🔨
+### Use your own Airbyte Source 🔨
 
 When you create a connection using `abs create my_connection --source "SOURCE"`, you can put any docker image you have access to as `SOURCE`. So `SOURCE` can be:
 
