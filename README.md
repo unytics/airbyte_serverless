@@ -199,7 +199,7 @@ Commands:
   <summary><b>Why cannot we use usual Airbyte destination connectors?</b></summary>
   <br>
 
-  > Airbyte-Serverless destination connectors are indeed specific to AirbyteServerless and can NOT be the ones from Airbyte. This is because, in AirbyteServerless, destination connectors manage the states and logs while in Airbyte this is handled by the platform. Thanks to this, we don't need a database 🥳!,
+  > Airbyte-Serverless destination connectors are indeed specific to AirbyteServerless and can NOT be the ones from Airbyte. This is because, in AirbyteServerless, destination connectors manage the states and logs while in Airbyte this is handled by the platform. Thanks to this, we don't need a database 🥳!
   >
   > This being said, AirbyteServerless destination connectors are very light. You'll find [here](https://github.com/unytics/airbyte_serverless/blob/main/airbyte_serverless/destinations.py#L105) that the BigQuery destination connector is only 50 lines of code.
 
