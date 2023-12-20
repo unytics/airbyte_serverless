@@ -178,11 +178,6 @@ Commands:
 <br>
 
 
-## Keep in touch 🧑‍💻
-
-[Join our Slack](https://join.slack.com/t/unytics/shared_invite/zt-1gbv491mu-cs03EJbQ1fsHdQMcFN7E1Q) for any question, to get help for getting started, to speak about a bug, to suggest improvements, or simply if you want to have a chat 🙂.
-
-<br>
 
 
 ## 🚚 Migrating Airbyte <-> Airbyte Serverless
@@ -193,6 +188,14 @@ Commands:
   - if you start using airbyte and rely on airbyte transforms, you will need to re-create them in dbt if you switch to airbyte-serverless
 3. When migrating from/to Airbyte Cloud <-> Airbyte OSS self-deployed <-> Airbyte Serverless, you won't be able to copy the state (which stores where incremental jobs stop). Then you will need to make a full refresh.
 
+<br>
+
+
+## Keep in touch 🧑‍💻
+
+[Join our Slack](https://join.slack.com/t/unytics/shared_invite/zt-1gbv491mu-cs03EJbQ1fsHdQMcFN7E1Q) for any question, to get help for getting started, to speak about a bug, to suggest improvements, or simply if you want to have a chat 🙂.
+
+<br>
 
 ## 👋 Contribute
 
