@@ -183,7 +183,7 @@ Commands:
 ## FAQ ❓
 
 <details>
-  <summary>**Is it easy to migrate from/to Airbyte ↔ AirbyteServerless?**</summary>
+  <summary><b>Is it easy to migrate from/to Airbyte ↔ AirbyteServerless?</b></summary>
 
   > 1. AirbyteServerless uses Airbyte source connectors. Then, the same config is used. If it works on AirbyteServerless, it will work on Airbyte. The reverse may be sometimes a bit harder if for some sources you created credentials using oauth2 (with a pop-up window from the source opened by Airbyte UI). Indeed, Airbyte may not give you a way to read these created credentials.
   > 2. Airbyte jobs have two steps: extract-load of raw data and optional transform (transform can be replace, upsert, basic normalization). The extract-load of raw data is exactly the same but AirbyteServerless does not do transform. It only appends raw data at the destination. This is for purpose as AirbyteServerless was made to do only one thing and do it well and we believe it makes it resilient to schema changes. Then,
