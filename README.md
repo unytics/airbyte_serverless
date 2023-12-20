@@ -135,6 +135,17 @@ abs remote-run my_first_connection
 > 4. If your yaml config contains some Google Secrets, the service account you put in `service_account` field of `remote_runner` section of the yaml must have read access to the secrets.
 
 
+### Use your own Airbyte Source docker image 🔨
+
+When you create a connection using `abs create my_connection --source "SOURCE"`, you can put any docker image you have access to as `SOURCE`. So `SOURCE` can be:
+
+- a public docker image from Docker Hub
+- a local docker image that you built
+- a docker image that you built and pushed on [Google Artifact Registry](https://cloud.google.com/artifact-registry/docs/docker).
+
+To run remotely on a cloud run job, the image must be available to Cloud Run (so cannot be local). It must be either public from Docker Hub or from Google Artifact Registry.
+
+
 ### Schedule the run from the Remote Runner ⏱️
 
 ``` sh
@@ -183,6 +194,7 @@ Any contribution is more than welcome 🤗!
 - Raise an issue to raise a bug or suggest improvements
 - Open a PR! Below are some suggestions of work to be done:
   - implements a scheduler
+  - create a very light python airbyte source / add a tutorial to use it in abs
   - implement the `get_logs` method of `BigQueryDestination`
   - enable updating cloud run job instead of deleting/creating when it already exists
   - add a new destination connector (Cloud Storage?)
@@ -192,7 +204,7 @@ Any contribution is more than welcome 🤗!
 
 <br>
 
-## 🏆 Credits
+## 🔨 Credits
 
 - Big kudos to Airbyte for all the hard work on connectors!
 - The generation of the sample connector configuration in yaml is heavily inspired from the code of `octavia` CLI developed by airbyte.
