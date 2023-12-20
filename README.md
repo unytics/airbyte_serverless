@@ -183,7 +183,7 @@ Commands:
 ## ❓ FAQ
 
 <details>
-  <summary><b>Is it easy to migrate from/to Airbyte ↔ AirbyteServerless?</b></summary>
+  <summary><b>Is it easy to migrate from/to Airbyte?</b></summary>
 
   <br>
   > 1. AirbyteServerless uses Airbyte source connectors. Then, the same config is used. If it works on AirbyteServerless, it will work on Airbyte. The reverse may be sometimes a bit harder if for some sources you created credentials using oauth2 (with a pop-up window from the source opened by Airbyte UI). Indeed, Airbyte may not give you a way to read these created credentials.
@@ -195,7 +195,7 @@ Commands:
 </details>
 
 <details>
-  <summary><b>Why cannot we use usual Airbyte destination connectors on AirbyteServerless?</b></summary>
+  <summary><b>Why cannot we use usual Airbyte destination connectors?</b></summary>
 
   <br>
   > Airbyte-Serverless destination connectors are indeed specific to AirbyteServerless and can NOT be the ones from Airbyte. This is because, in AirbyteServerless, destination connectors manage the states and logs while in Airbyte this is handled by the platform. Thanks to this, we don't need a database 🥳!,
