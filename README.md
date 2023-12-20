@@ -185,6 +185,14 @@ Commands:
 <br>
 
 
+## 🚚 Migrating Airbyte <-> Airbyte Serverless
+
+1. Airbyte Serverless uses Airbyte source connectors. Then, the same config is used. If it works on Airbyte Serverless, it will work on Airbyte. The reverse may be sometimes a bit harder if for some sources you created credentials using oauth2 (with a pop-up window from the source opened by airbyte UI). Indeed, Airbyte may not give you a way to read these created credentials.
+2. Airbyte jobs have two steps: extract-load of raw data and optional transform (transform can be replace, upsert, basic normalization). The extract-load of raw data is exactly the same but airbyte-serverless does not do transform. It only appends raw data at the destination. This is for purpose as airbyte-serverless was made to do only one thing and do it well and we believe it makes it more resilient to schema changes as schema serverless does not care about schema. Then,
+  - if you create your transforms from raw data on dbt, you will be able to migrate from airbyte-serveless to airbyte and vice-versa and still use your transforms.
+  - if you start using airbyte and rely on airbyte transforms, you will need to re-create them in dbt if you switch to airbyte-serverless
+3. When migrating from/to Airbyte Cloud <-> Airbyte OSS self-deployed <-> Airbyte Serverless, you won't be able to copy the state (which stores where incremental jobs stop). Then you will need to make a full refresh.
+
 
 ## 👋 Contribute
 
