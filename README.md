@@ -180,7 +180,7 @@ Commands:
 
 
 
-## FAQ ❓
+## ❓ FAQ
 
 <details>
   <summary><b>Is it easy to migrate from/to Airbyte ↔ AirbyteServerless?</b></summary>
