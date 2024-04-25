@@ -40,8 +40,8 @@ class ExecutableAirbyteSource:
         command = f'{self.executable} {action}'
 
         def add_argument(name, value):
-            file = open(f'{self.temp_dir}/{name}.json', 'w', encoding='utf-8')
-            json.dump(value, file)
+            with open(f'{self.temp_dir}/{name}.json', 'w', encoding='utf-8') as file:
+                json.dump(value, file)
             return f' --{name} {self.temp_dir_for_executable}/{name}.json'
 
         needs_config = (action != 'spec')
