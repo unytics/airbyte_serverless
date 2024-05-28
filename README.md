@@ -14,6 +14,10 @@
 
 AirbyteServerless is a simple tool to **manage Airbyte connectors**, run them **locally** or deploy them in **serverless** mode.
 
+![logo](https://raw.githubusercontent.com/unytics/airbyte_serverless/main/airbyte_serverless.gif)
+
+
+
 <br>
 
 ## 💡  Why AirbyteServerless?
@@ -97,6 +101,28 @@ abs set-streams my_first_connection "stream1,stream2"
 Next `run` executions will extract selected streams only.
 
 
+### Handle Secrets 🔒
+
+For security reasons, you do NOT want to store secrets such as api tokens in your yaml files. Instead, add your secrets in Google Secret Manager by following [this documentation](https://cloud.google.com/secret-manager/docs/create-secret-quickstart). Then you can add the secret resource name in the yaml file such as below:
+
+```yaml
+source:
+  docker_image: "..."
+  config:
+    api_token: GCP_SECRET({SECRET_RESOURCE_NAME})
+```
+
+Replace `{SECRET_RESOURCE_NAME}` by your secret resource name which must have the format: `projects/{PROJECT_ID}/secrets/{SECRET_ID}/versions/{SECRET_VERSION}`. To get this path:
+
+> 1. Go to the [Secret Manager page](https://console.cloud.google.com/security/secret-manager) in the Google Cloud console.
+> 2. Go to the Secret Manager page
+> 3. On the Secret Manager page, click on the Name of a secret.
+> 4. On the Secret details page, in the Versions table, locate a secret version to access.
+> 5. In the Actions column, click on the three dots.
+> 6. Click on 'Copy Resource Name' from the menu.
+
+
+
 ### Run from the Remote Runner 🚀
 
 ``` sh
@@ -105,7 +131,19 @@ abs remote-run my_first_connection
 > 2. The `remote-run` commmand will only work if you have correctly edited `./connections/my_first_connection.yaml` configuration file including the `remote_runner` part.
 
 > 1. This command will launch an Extract-Load Job like the `abs run` command. The main difference is that the command will be run on a remote deployed container (we use Cloud Run Job as the only container runner for now).
-> 3. If you chose `bigquery` destination, the selected service account must be `bigquery.dataEditor` on the target dataset and have permission to create some BigQuery jobs in the project.
+> 3. If you chose `bigquery` destination, the service account you put in `service_account` field of `remote_runner` section of the yaml must be `bigquery.dataEditor` on the target dataset and have permission to create some BigQuery jobs in the project.
+> 4. If your yaml config contains some Google Secrets, the service account you put in `service_account` field of `remote_runner` section of the yaml must have read access to the secrets.
+
+
+### Use your own Airbyte Source 🔨
+
+When you create a connection using `abs create my_connection --source "SOURCE"`, you can put any docker image you have access to as `SOURCE`. So `SOURCE` can be:
+
+- a public docker image from Docker Hub
+- a local docker image that you built
+- a docker image that you built and pushed on [Google Artifact Registry](https://cloud.google.com/artifact-registry/docs/docker).
+
+To run remotely on a cloud run job, the image must be available to Cloud Run (so cannot be local). It must be either public from Docker Hub or from Google Artifact Registry.
 
 
 ### Schedule the run from the Remote Runner ⏱️
@@ -140,13 +178,43 @@ Commands:
 <br>
 
 
+
+
+## ❓ FAQ
+
+<details>
+  <summary><b>Is it easy to migrate from/to Airbyte?</b></summary>
+  <br>
+
+  1. AirbyteServerless uses Airbyte source connectors. Then, the same config is used. If it works on AirbyteServerless, it will work on Airbyte. The reverse may be sometimes a bit harder if for some sources you created credentials using oauth2 (with a pop-up window from the source opened by Airbyte UI). Indeed, Airbyte may not give you a way to read these created credentials.
+  2. Airbyte jobs have two steps: extract-load of raw data and optional transform (transform can be replace, upsert, basic normalization). The extract-load of raw data is exactly the same but AirbyteServerless does not do transform. It only appends raw data at the destination. This is for purpose as AirbyteServerless was made to do only one thing and do it well and we believe it makes it resilient to schema changes. Then,
+      - if you create your transforms from raw data on dbt, you will be able to migrate from AirbyteServerless to Airbyte and vice-versa and still use your transforms.
+      - if you use Airbyte and rely on Airbyte transforms, you will need to re-create them in dbt if you switch to AirbyteServerless
+  3. When migrating from/to Airbyte Cloud ↔ Airbyte OSS self-deployed ↔ AirbyteServerless, you won't be able to copy the state (which stores where incremental jobs stop). Then you will need to make a full refresh.
+
+  <br>
+</details>
+
+<details>
+  <summary><b>Why cannot we use usual Airbyte destination connectors?</b></summary>
+  <br>
+
+  Airbyte-Serverless destination connectors are indeed specific to AirbyteServerless and can NOT be the ones from Airbyte. This is because, in AirbyteServerless, destination connectors manage the states and logs while in Airbyte this is handled by the platform. Thanks to this, we don't need a database 🥳!
+
+  This being said, AirbyteServerless destination connectors are very light. You'll find [here](https://github.com/unytics/airbyte_serverless/blob/main/airbyte_serverless/destinations.py#L105) that the BigQuery destination connector is only 50 lines of code.
+
+  <br>
+</details>
+
+
+<br>
+
+
 ## Keep in touch 🧑‍💻
 
 [Join our Slack](https://join.slack.com/t/unytics/shared_invite/zt-1gbv491mu-cs03EJbQ1fsHdQMcFN7E1Q) for any question, to get help for getting started, to speak about a bug, to suggest improvements, or simply if you want to have a chat 🙂.
 
 <br>
-
-
 
 ## 👋 Contribute
 
@@ -156,8 +224,10 @@ Any contribution is more than welcome 🤗!
 - Raise an issue to raise a bug or suggest improvements
 - Open a PR! Below are some suggestions of work to be done:
   - implements a scheduler
-  - improve secrets management (use secret manager)
+  - create a very light python Airbyte source / add a tutorial to use it in abs
   - implement the `get_logs` method of `BigQueryDestination`
+  - use the new BigQuery Storage Write API for bigquery destination
+  - enable updating cloud run job instead of deleting/creating when it already exists
   - add a new destination connector (Cloud Storage?)
   - add more remote runners such compute instances.
   - implements vpc access
@@ -165,7 +235,7 @@ Any contribution is more than welcome 🤗!
 
 <br>
 
-## 🏆 Credits
+## 🔨 Credits
 
 - Big kudos to Airbyte for all the hard work on connectors!
-- The generation of the sample connector configuration in yaml is heavily inspired from the code of `octavia` CLI developed by airbyte.
+- The generation of the sample connector configuration in yaml is heavily inspired from the code of `octavia` CLI developed by Airbyte.

@@ -1,7 +1,7 @@
 import setuptools
 
 
-VERSION = '0.22'
+VERSION = '0.23'
 
 
 with open('README.md', 'r', encoding='utf-8') as fh:
@@ -27,6 +27,7 @@ setuptools.setup(
     install_requires=[
         'google-cloud-bigquery',
         'google-cloud-run',
+        'google-cloud-secret-manager',
         'pyyaml',
         'jinja2',
         'click',
