@@ -1,5 +1,7 @@
 import base64
 
+from .version import VERSION
+
 class BaseRunner:
 
     yaml_definition_example = ''
@@ -52,7 +54,7 @@ class CloudRunJobRunner(BaseRunner):
         container = {
             "image": docker_image,
             "command": ["/bin/sh"],
-            "args": ['-c', 'pip install airbyte-serverless && abs run-env-vars'],
+            "args": ['-c', f'pip install airbyte-serverless=={VERSION} && abs run-env-vars'],
             "env": [{"name": "YAML_CONFIG", "value": yaml_config_b64}] + env,
             "resources": {
                 "limits": {

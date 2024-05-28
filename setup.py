@@ -1,7 +1,12 @@
+import re
 import setuptools
 
 
-VERSION = '0.23'
+with open('airbyte_serverless/version.py', 'r', encoding='utf-8') as fh:
+    content = fh.read()
+    content = content.replace('"', '').replace("'", '')
+    matches = re.findall(r'VERSION\s*=\s*(\d*\.\d*)', content)
+    VERSION = matches[0]
 
 
 with open('README.md', 'r', encoding='utf-8') as fh:
