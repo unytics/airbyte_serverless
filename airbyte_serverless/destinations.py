@@ -52,6 +52,7 @@ class BaseDestination:
                 self._format_and_write('_airbyte_states', [message['state']])
                 self.slice_started_at = datetime.datetime.utcnow().isoformat()
             elif message['type'] == 'LOG':
+                print(message['log'])
                 self._format_and_write('_airbyte_logs', [message['log']])
             elif message['type'] == 'TRACE':
                 self._format_and_write('_airbyte_logs', [message['trace']])
@@ -105,7 +106,7 @@ class PrintDestination(BaseDestination):
 class BigQueryDestination(BaseDestination):
 
     yaml_definition_example = (
-        BaseDestination.yaml_definition_example + '\n' + 
+        BaseDestination.yaml_definition_example + '\n' +
         'dataset: "" # REQUIRED | string | Destination dataset. Must be fully qualified with project like `PROJECT.DATASET`'
     )
 
@@ -123,15 +124,71 @@ class BigQueryDestination(BaseDestination):
         import google.api_core.exceptions
         try:
             rows = self.bigquery.query(f'''
-                select json_extract(_airbyte_data, '$.data') as state
-                from {self.dataset}._airbyte_states
+                with
+
+                stream_states as (
+
+                    select
+                        json_value(_airbyte_data, '$.stream.stream_descriptor.name') as stream,
+                        _airbyte_data as state,
+                        _airbyte_loaded_at,
+                    from {self.dataset}._airbyte_states
+                    where json_value(_airbyte_data, '$.type') = 'STREAM'
+                    qualify row_number() over (partition by stream order by _airbyte_loaded_at desc) = 1
+
+                ),
+
+                global_state as (
+
+                    select
+                        _airbyte_data as state,
+                        _airbyte_loaded_at,
+                    from {self.dataset}._airbyte_states
+                    where json_value(_airbyte_data, '$.type') = 'GLOBAL'
+                    order by _airbyte_loaded_at desc
+                    limit 1
+
+                ),
+
+                legacy_state as (
+
+                    select
+                        json_extract(_airbyte_data, '$.data') as state,
+                        _airbyte_loaded_at,
+                    from {self.dataset}._airbyte_states
+                    where json_extract(_airbyte_data, '$.data') is not null
+                    order by _airbyte_loaded_at desc
+                    limit 1
+
+                ),
+
+
+                stream_states_formatted as (
+                    select
+                        to_json(array_agg(state)) as state,
+                        max(_airbyte_loaded_at) as _airbyte_loaded_at,
+                    from stream_states
+                ),
+
+                global_state_formatted as (
+                    select
+                        json_array(state) as state,
+                        _airbyte_loaded_at,
+                    from global_state
+                )
+
+                select state, _airbyte_loaded_at from stream_states_formatted union all
+                select state, _airbyte_loaded_at from global_state_formatted union all
+                select state, _airbyte_loaded_at from legacy_state
                 order by _airbyte_loaded_at desc
                 limit 1
             ''').result()
         except google.api_core.exceptions.NotFound:
             return {}
-        rows = list(rows)
-        return json.loads(rows[0].state) if rows else {}
+        states = list(rows)
+        if not states:
+            return {}
+        return states[0].state
 
     def _write(self, record_type, records):
         table = record_type
@@ -173,7 +230,7 @@ class Destination:
         self.connector = connector
         self.config = config
         self._destination = None
-        
+
     @property
     def yaml_definition_example(self):
         return '\n'.join([
@@ -187,6 +244,6 @@ class Destination:
             self._destination = self.destination_class(**self.config)
         return getattr(self._destination, name)
 
-    
-    
-    
+
+
+
