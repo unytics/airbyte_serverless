@@ -6,3 +6,5 @@ TODO.md
 venv/
 build/
 .idea
+venv/
+.venv/
