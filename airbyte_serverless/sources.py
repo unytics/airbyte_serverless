@@ -162,8 +162,8 @@ class Source:
             self.source = ExecutableAirbyteSource(executable, config, streams)
         elif docker_image:
             self.source = DockerAirbyteSource(docker_image, config, streams)
-        else:  
-            raise Exception('One of the following arguments must be provided: `docker_image_or_executable`, `docker_image` or `executable`')            
+        else:
+            raise Exception('One of the following arguments must be provided: `docker_image_or_executable`, `docker_image` or `executable`')
 
     def __getattr__(self, name):
         return getattr(self.source, name)
