@@ -39,6 +39,8 @@ class CloudRunJobRunner(BaseRunner):
         runner_config = self.connection.config['remote_runner']['config']
         project = runner_config['project']
         region = runner_config['region']
+        assert project, 'Project is null in connection yaml file (under remote_runner field). Please fill it'
+        assert region, 'Region is null in connection yaml file (under remote_runner field). Please fill it'
         service_account = runner_config.get('service_account')
         env_vars = runner_config.get('env_vars')
         env = []
