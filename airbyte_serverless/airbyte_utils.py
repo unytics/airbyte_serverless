@@ -11,7 +11,7 @@ from typing import Any, Callable, List
 import jinja2
 
 
-TEMPLATE = jinja2.Template('''# PREGENERATED | object | PLEASE UPDATE this pre-generated config by following the documentation {{ documentation_url }}
+TEMPLATE = jinja2.Template('''# PREGENERATED | object | PLEASE UPDATE this pre-generated config
 {%- macro render_field(field, is_commented) %}
 {%- if is_commented %}# {% endif %}{{ field.name }}:{% if field.default %} {% if field.airbyte_secret %}{{ field.default }}{% else %}{{ field.default | tojson() }}{% endif %}{% endif %} # {{ field.comment }}
 {%- endmacro %}
@@ -216,8 +216,5 @@ def parse_connection_specification(schema: dict) -> List[List["FieldToRender"]]:
 
 
 def generate_connection_yaml_config_sample(source_spec):
-    parsed_schema = parse_connection_specification(source_spec['connectionSpecification'])
-    return TEMPLATE.render({
-        "documentation_url": source_spec['documentationUrl'],
-        "configuration_fields": parsed_schema,
-    })
+    configuration_fields = parse_connection_specification(source_spec['connectionSpecification'])
+    return TEMPLATE.render(configuration_fields=configuration_fields)
