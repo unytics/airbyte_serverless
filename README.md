@@ -52,13 +52,13 @@ AirbyteServerless aims at offering **a lightweight alternative** to Airbyte-Open
 pip install airbyte-serverless
 ```
 
-### Create your first Connection 👨‍💻
+### Create your first Connection with a Docker Source from DockerHub 👨‍💻
 
 ``` sh
 abs create my_first_connection --source="airbyte/source-faker:0.1.4" --destination="bigquery" --remote-runner "cloud_run_job"
 ```
 
-> 1. Docker is required. Make sure you have it installed.
+> 1. Docker is required. Make sure you have it installed. (IF YOU DON'T HAVE DOCKER AND WANT TO RUN A PYTHON CONNECTOR, READ NEXT SECTION)
 > 2. `source` param can be any Public Docker Airbyte Source ([here](https://hub.docker.com/search?q=airbyte%2Fsource-) is the list). We recomend that you use faker source to get started.
 > 3. `destination` param must be one of the following:
 >     - `print` (default value if not set)
@@ -67,6 +67,19 @@ abs create my_first_connection --source="airbyte/source-faker:0.1.4" --destinati
 > 4. `remote-runner` param must be `cloud_run_job`. More integrations will come in the future. This remote-runner is only used if you want to run the connection on a remote runner and schedule it.
 > 5. The command will create a configuration file `./connections/my_first_connection.yaml` with initialized configuration.
 > 6. Update this configuration file to suit your needs.
+
+
+### Create your first Connection with an Airbyte Python Source from pypi (Docker NOT needed) 👨‍💻
+
+Actually, `source` can be a docker image or any command. Below, we use `pipx` tool to run [`airbyte-source-faker` python package available on pypi](https://pypi.org/project/airbyte-source-faker/).
+
+``` sh
+abs create my_first_connection --source="pipx run airbyte-source-faker==0.1.4"
+```
+
+The value just after `pipx run` can be any Airbyte Python Source [available on pypi](https://pypi.org/search/?q=airbyte-source-). For security reasons, beware to check that the source you are going to install is really from Airbyte.
+
+The other arguments are the same as before.
 
 
 ### Run it! ⚡
@@ -124,6 +137,8 @@ Replace `{SECRET_RESOURCE_NAME}` by your secret resource name which must have th
 
 
 ### Run from the Remote Runner 🚀
+
+WARNING: THIS ONLY WORKS FOR NOW WITH A DOCKER SOURCE in python language.
 
 ``` sh
 abs remote-run my_first_connection
