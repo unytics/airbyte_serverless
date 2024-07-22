@@ -37,6 +37,7 @@ setuptools.setup(
         'jinja2',
         'click',
         'click-help-colors',
+        'pipx',
     ],
     entry_points={
         'console_scripts': [
