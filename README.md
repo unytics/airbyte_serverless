@@ -69,9 +69,11 @@ abs create my_first_connection --source="airbyte/source-faker:0.1.4" --destinati
 > 6. Update this configuration file to suit your needs.
 
 
-### Create your first Connection with an Airbyte Python Source from pypi (Docker NOT needed) 👨‍💻
+### Create your first Connection with a Python Source from PyPI 👨‍💻
 
-Actually, `source` can be a docker image or any command. Below, we use `pipx` tool to run [`airbyte-source-faker` python package available on pypi](https://pypi.org/project/airbyte-source-faker/).
+Actually, `source` argument can be a docker image as above or any command.
+
+Below, we use `pipx` tool to run [`airbyte-source-faker` python package available on pypi](https://pypi.org/project/airbyte-source-faker/).
 
 ``` sh
 abs create my_first_connection --source="pipx run airbyte-source-faker==0.1.4"
