@@ -46,7 +46,7 @@ class ExecutableAirbyteSource:
 
         needs_config = (action != 'spec')
         if needs_config:
-            assert self.config, 'config attribute is not defined'
+            assert self.config is not None, 'config attribute is not defined'
             command += add_argument('config', self.config)
 
         needs_configured_catalog = (action == 'read')
