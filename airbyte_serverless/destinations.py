@@ -115,7 +115,7 @@ class BigQueryDestination(BaseDestination):
         import google.cloud.bigquery
         assert dataset, 'dataset argument must be defined'
         assert len(dataset.split('.')) == 2, '`BigQueryDestination.dataset` must be like `project.dataset`'
-        self.dataset = dataset
+        self.dataset = dataset.replace('`', '').strip()
         self.project, _ = self.dataset.split('.')
         self.bigquery = google.cloud.bigquery.Client(project=self.project)
         self.created_tables = []
@@ -132,7 +132,7 @@ class BigQueryDestination(BaseDestination):
                         json_value(_airbyte_data, '$.stream.stream_descriptor.name') as stream,
                         _airbyte_data as state,
                         _airbyte_loaded_at,
-                    from {self.dataset}._airbyte_states
+                    from `{self.dataset}._airbyte_states`
                     where json_value(_airbyte_data, '$.type') = 'STREAM'
                     qualify row_number() over (partition by stream order by _airbyte_loaded_at desc) = 1
 
@@ -143,7 +143,7 @@ class BigQueryDestination(BaseDestination):
                     select
                         _airbyte_data as state,
                         _airbyte_loaded_at,
-                    from {self.dataset}._airbyte_states
+                    from `{self.dataset}._airbyte_states`
                     where json_value(_airbyte_data, '$.type') = 'GLOBAL'
                     order by _airbyte_loaded_at desc
                     limit 1
@@ -155,7 +155,7 @@ class BigQueryDestination(BaseDestination):
                     select
                         json_extract(_airbyte_data, '$.data') as state,
                         _airbyte_loaded_at,
-                    from {self.dataset}._airbyte_states
+                    from `{self.dataset}._airbyte_states`
                     where json_extract(_airbyte_data, '$.data') is not null
                     order by _airbyte_loaded_at desc
                     limit 1
@@ -205,7 +205,7 @@ class BigQueryDestination(BaseDestination):
             for column, type, description in self.destination_columns
         ])
         self.bigquery.query(f'''
-            create table if not exists {self.dataset}.{table} (
+            create table if not exists `{self.dataset}.{table}` (
                 {columns_definitions}
             )
             partition by date(_airbyte_loaded_at)
