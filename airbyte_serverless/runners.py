@@ -67,7 +67,7 @@ class CloudRunJobRunner(BaseRunner):
         }
         job_config = {
             "containers": [container],
-            "timeout": "3600s",
+            "timeout": "86400s",
             "max_retries": 0,
         }
         if service_account:
