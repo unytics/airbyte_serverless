@@ -60,7 +60,7 @@ class CloudRunJobRunner(BaseRunner):
             "env": [{"name": "YAML_CONFIG", "value": yaml_config_b64}] + env,
             "resources": {
                 "limits": {
-                    "memory": '512Mi',
+                    "memory": '1024Mi',
                     "cpu": '1',
                 }
             }
