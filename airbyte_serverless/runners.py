@@ -39,10 +39,10 @@ class CloudRunJobRunner(BaseRunner):
         runner_config = self.connection.config['remote_runner']['config']
         project = runner_config['project']
         region = runner_config['region']
-        instance_memory = runner_config.get('memory', '1024Mi')
-        instance_cpu = runner_config.get('cpu', '1')
-        instance_timeout = runner_config.get('timeout', '86400s')
-        instance_retry = runner_config.get('retry', 0)
+        memory = runner_config.get('memory', '1024Mi')
+        cpu = str(runner_config.get('cpu', 1))
+        timeout = runner_config.get('timeout', '86400s')
+        max_retries = runner_config.get('max_retries', 0)
 
 
         assert project, 'Project is null in connection yaml file (under remote_runner field). Please fill it'
@@ -66,15 +66,15 @@ class CloudRunJobRunner(BaseRunner):
             "env": [{"name": "YAML_CONFIG", "value": yaml_config_b64}] + env,
             "resources": {
                 "limits": {
-                    "memory": instance_memory,
-                    "cpu": instance_cpu,
+                    "memory": memory,
+                    "cpu": cpu,
                 }
             }
         }
         job_config = {
             "containers": [container],
-            "timeout": instance_timeout,
-            "max_retries": instance_retry,
+            "timeout": timeout,
+            "max_retries": max_retries,
         }
         if service_account:
             job_config['service_account'] = service_account
