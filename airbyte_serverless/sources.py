@@ -4,7 +4,27 @@ import subprocess
 import json
 import shutil
 
+import requests
+
 from . import airbyte_utils
+
+AVAILABLE_PYTHON_SOURCES_URL = 'https://connectors.airbyte.com/files/registries/v0/oss_registry.json'
+AVAILABLE_PYTHON_SOURCES = []
+
+
+def get_available_python_sources():
+    if AVAILABLE_PYTHON_SOURCES:
+        return AVAILABLE_PYTHON_SOURCES
+    resp = requests.get(AVAILABLE_PYTHON_SOURCES_URL)
+    res = resp.json()
+    sources = res['sources']
+    python_sources = [
+        f"{source.get('remoteRegistries', {}).get('pypi', {}).get('packageName')}=={source['dockerImageTag']}"
+        for source in sources
+        if source.get('remoteRegistries', {}).get('pypi', {}).get('enabled') is True
+    ]
+    AVAILABLE_PYTHON_SOURCES.extend(python_sources)
+    return python_sources
 
 
 class AirbyteSourceException(Exception):
@@ -23,17 +43,16 @@ class ExecutableAirbyteSource:
 
     @property
     def yaml_definition_example(self):
-        yaml_definition_example = '\n'.join([
+        return '\n'.join([
             f'executable: "{self.executable}" # GENERATED | string | Command to launch the Airbyte Source',
-            'config: TO_REPLACE',
+            'config: ' + self.yaml_config_example.replace('\n', '\n  ').strip(),
             'streams: # OPTIONAL | string | Comma-separated list of streams to retrieve. If missing, all streams are retrieved from source.',
         ])
+
+    @property
+    def yaml_config_example(self):
         spec = self.spec
-        config_yaml = airbyte_utils.generate_connection_yaml_config_sample(spec)
-        return yaml_definition_example.replace(
-            'TO_REPLACE',
-            config_yaml.replace('\n', '\n  ').strip()
-        )
+        return airbyte_utils.generate_connection_yaml_config_sample(spec)
 
     def _run(self, action, state=None):
         assert self.executable, '`executable` attribute should be set'

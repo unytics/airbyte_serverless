@@ -48,6 +48,8 @@ class Connection:
     '''
 
     def __init__(self, yaml_config=None):
+        if isinstance(yaml_config, dict):
+            yaml_config = yaml.dump(yaml_config)
         self.yaml_config = yaml_config
 
     def init_yaml_config(self, source, destination, remote_runner):
@@ -87,8 +89,8 @@ class Connection:
     def remote_runner(self):
         return Runner(self.config['remote_runner']['type'], self)
 
-    def run(self):
-        Runner('direct', self).run()
+    def run(self, state=None):
+        Runner('direct', self).run(state=state)
 
     def remote_run(self):
         self.remote_runner.run()

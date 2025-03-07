@@ -15,8 +15,9 @@ class BaseRunner:
 
 class DirectRunner(BaseRunner):
 
-    def run(self):
-        state = self.connection.destination.get_state()
+    def run(self, state=None):
+        if state is None:
+            state = self.connection.destination.get_state()
         messages = self.connection.source.extract(state=state)
         self.connection.destination.load(messages)
 
