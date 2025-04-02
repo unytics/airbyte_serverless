@@ -2,8 +2,6 @@ import json
 import datetime
 import uuid
 
-import yaml
-
 
 class BaseDestination:
 
@@ -54,6 +52,8 @@ class BaseDestination:
             elif message['type'] == 'LOG':
                 print(message['log'])
                 self._format_and_write('_airbyte_logs', [message['log']])
+            elif message['type'] == 'CONTROL':
+                pass
             elif message['type'] == 'TRACE':
                 self._format_and_write('_airbyte_logs', [message['trace']])
             else:
@@ -243,7 +243,3 @@ class Destination:
         if self._destination is None:
             self._destination = self.destination_class(**self.config)
         return getattr(self._destination, name)
-
-
-
-
