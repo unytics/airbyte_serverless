@@ -90,7 +90,7 @@ class ExecutableAirbyteSource:
     def _run_and_return_first_message(self, action):
         messages = self._run(action)
         message = next(
-            (message for message in messages if message['type'] not in ['LOG', 'TRACE']),
+            (message for message in messages if message['type'] not in ['LOG', 'TRACE', 'CONTROL']),
             None
         )
         assert message is not None, f'No message returned by AirbyteSource with action `{action}`'
