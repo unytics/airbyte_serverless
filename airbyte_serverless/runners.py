@@ -36,8 +36,10 @@ class CloudRunJobRunner(BaseRunner):
         import google.api_core.exceptions
         cloud_run = google.cloud.run_v2.JobsClient()
 
-        docker_image = self.connection.config['source']['docker_image']
         runner_config = self.connection.config['remote_runner']['config']
+        docker_image = runner_config.get('image') or self.connection.config['source']['docker_image']
+        command = runner_config.get('command') or ["/bin/sh"]
+        args = runner_config.get('args') or ['-c', f'pip install airbyte-serverless=={VERSION} && abs run-env-vars']
         project = runner_config['project']
         region = runner_config['region']
         memory = runner_config.get('memory', '1024Mi')
@@ -62,8 +64,8 @@ class CloudRunJobRunner(BaseRunner):
 
         container = {
             "image": docker_image,
-            "command": ["/bin/sh"],
-            "args": ['-c', f'pip install airbyte-serverless=={VERSION} && abs run-env-vars'],
+            "command": command,
+            "args": args,
             "env": [{"name": "YAML_CONFIG", "value": yaml_config_b64}] + env,
             "resources": {
                 "limits": {
