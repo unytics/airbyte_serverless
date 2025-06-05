@@ -21,7 +21,7 @@ def get_available_python_sources():
     python_sources = [
         f"{source.get('remoteRegistries', {}).get('pypi', {}).get('packageName')}=={source['dockerImageTag']}"
         for source in sources
-        if source.get('remoteRegistries', {}).get('pypi', {}).get('enabled') is True
+        if source.get('remoteRegistries', {}).get('pypi', {}).get('packageName') is not None
     ]
     AVAILABLE_PYTHON_SOURCES.extend(python_sources)
     return python_sources
